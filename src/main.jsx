@@ -7,10 +7,12 @@ import {
 } from "lucide-react";
 import { categories } from "./categories.js";
 import { AuthProvider, useAuth } from "./AuthContext.jsx";
+import { AdminProvider } from "./AdminContext.jsx";
 import CategoryPage from "./CategoryPage.jsx";
 import ServicePage from "./ServicePage.jsx";
 import AuthModal from "./AuthModal.jsx";
 import AboutPage from "./AboutPage.jsx";
+import AdminPage from "./AdminPage.jsx";
 import "./styles.css";
 
 /* ─── Mobile Menu ─── */
@@ -177,13 +179,25 @@ function HomePage() {
       <section className="content" id="servicos">
         <div className="sectionIntro">
           <p className="eyebrow">Catálogo turístico</p>
-          <h2>Serviços que fazem sentido Conhecer</h2>
-          <p>Cada categoria foi pensada para receber anúncios, reservas, contactos diretos e conteúdo editorial sobre experiências no arquipélago.</p>
+          <h2>Serviços que fazem sentido publicitar</h2>
+          <p>Cada categoria foi pensada para receber parceiros, anúncios, reservas, contactos diretos e conteúdo editorial sobre experiências no arquipélago.</p>
         </div>
         <div className="categoryStack">
           {visibleCategories.map((category) => (
             <ServiceCategory key={category.id} category={category} />
           ))}
+        </div>
+      </section>
+
+      <section className="experienceBand" id="experiencias">
+        <div>
+          <p className="eyebrow">Para operadores locais</p>
+          <h2>Um site pronto para transformar curiosidade em reserva.</h2>
+        </div>
+        <div className="featureGrid">
+          <article><Sparkles size={22} /><h3>Vitrines de parceiros</h3><p>Perfis para hotéis, restaurantes, guias, lojas e empresas de transporte.</p></article>
+          <article><Compass size={22} /><h3>Roteiros temáticos</h3><p>Experiências por interesse: natureza, cultura, gastronomia, ou aventura.</p></article>
+          <article><Camera size={22} /><h3>Conteúdo visual</h3><p>Galerias, chamadas editoriais e fotografias que destacam o melhor de STP.</p></article>
         </div>
       </section>
 
@@ -194,6 +208,40 @@ function HomePage() {
         </div>
         <Link to="/sobre" style={{ color:"inherit", fontSize:"0.9rem", fontWeight:700 }}>Sobre nós →</Link>
         <a href="mailto:info@stpverde.st">info@stpverde.st</a>
+        <Link
+          to="/admin"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "7px",
+            padding: "9px 18px",
+            borderRadius: "999px",
+            border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.07)",
+            color: "rgba(255,255,255,0.55)",
+            fontSize: "0.8rem",
+            fontWeight: 700,
+            textDecoration: "none",
+            letterSpacing: "0.04em",
+            backdropFilter: "blur(4px)",
+            transition: "background 0.2s, color 0.2s, border-color 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.14)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.9)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.35)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.55)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
+          }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Área restrita
+        </Link>
       </footer>
 
       {authModal && <AuthModal onClose={() => setAuthModal(false)} onSuccess={() => setAuthModal(false)} />}
@@ -246,16 +294,19 @@ function ServiceCategory({ category }) {
 /* ─── App ─── */
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/sobre" element={<AboutPage />} />
-          <Route path="/categorias/:id" element={<CategoryPage />} />
-          <Route path="/categorias/:catId/:serviceId" element={<ServicePage />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <AdminProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/sobre" element={<AboutPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/categorias/:id" element={<CategoryPage />} />
+            <Route path="/categorias/:catId/:serviceId" element={<ServicePage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </AdminProvider>
   );
 }
 

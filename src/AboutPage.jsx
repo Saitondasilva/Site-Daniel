@@ -9,8 +9,8 @@ import {
 import "./aboutPage.css";
 
 const team = [
-  { name: "Daniel Sousa", role: "Fundador", initial: "D", bio: " Nota do front: Poderá colocar um pouco sobre si aqui caso não, informar para eliminar a biografia" },
-];
+  { name: "Daniel Sousa", role: "Fundador", initial: "D", bio: "Natural de São Tomé, Daniel cresceu entre as roças e o mar. Depois de anos a trabalhar em turismo sustentável em Portugal, regressou para construir o portal que a ilha merecia." },
+ ];
 
 const values = [
   { icon: Leaf, title: "Turismo Sustentável", desc: "Promovemos apenas parceiros comprometidos com práticas ambientais responsáveis e com a preservação da floresta equatorial e dos recifes de STP." },
@@ -135,7 +135,7 @@ export default function AboutPage() {
             </a>
             <a href="tel:+23912345678" className="ab-contact-card">
               <div className="ab-contact-icon"><Phone size={22} /></div>
-              <div><p className="ab-contact-label">Telefone (STP)</p><p className="ab-contact-val">+239 123 456 78</p></div>
+              <div><p className="ab-contact-label">Telefone (STP)</p><p className="ab-contact-val">+239 9991547</p></div>
             </a>
             <div className="ab-contact-card ab-contact-card--social">
               <div className="ab-contact-icon"><Globe size={22} /></div>
@@ -144,7 +144,6 @@ export default function AboutPage() {
                 <div className="ab-socials">
                   <a href="#" aria-label="Instagram"><Instagram size={18} /></a>
                   <a href="#" aria-label="Facebook"><Facebook size={18} /></a>
-                  <a href="#" aria-label="Twitter"><Twitter size={18} /></a>
                 </div>
               </div>
             </div>
@@ -155,7 +154,7 @@ export default function AboutPage() {
 
       {/* ── Footer ── */}
       <footer className="ab-footer">
-        <Link to="/" className="ab-footer-logo">STP Verde</Link>
+        <Link to="/" className="ab-footer-logo">STP Tour</Link>
         <p>Portal turístico para São Tomé e Príncipe · Feito com 🌿 pela ilha</p>
         <Link to="/" className="ab-footer-link">Voltar ao portal <ChevronRight size={14} /></Link>
       </footer>
