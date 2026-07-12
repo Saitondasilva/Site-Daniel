@@ -1,3 +1,4 @@
+//main.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
@@ -64,10 +65,11 @@ function MobileMenu({ open, onClose, onLoginClick }) {
         ))}
 
         <div style={{ marginTop:"auto", borderTop:"1px solid var(--line)", paddingTop:"20px", display:"flex", flexDirection:"column", gap:"8px" }}>
-          <a href="#servicos" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Serviços</a>
-          <a href="#experiencias" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Experiências</a>
-          <a href="#contacto" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Contacto</a>
-          <Link to="/sobre" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Sobre nós</Link>
+          <a href="#servicos" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Alojamento</a>
+          <a href="#experiencias" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Transporte</a>
+          <a href="#contacto" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Excursões</a>
+          <a href="#contacto" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Tours</a>
+          <Link to="/sobre" onClick={onClose} style={{ color:"var(--muted)", fontSize:"0.9rem", fontWeight:700, textDecoration:"none" }}>Contato</Link>
         </div>
       </nav>
     </>
@@ -105,8 +107,10 @@ function HomePage() {
           </Link>
 
           <div className="navLinks">
-            <a href="#servicos">Serviços</a>
-            <a href="#experiencias">Experiências</a>
+            <a href="#servicos">Alojamento</a>
+            <a href="#experiencias">Transporte</a>
+            <a href="#experiencias">Excursões </a>
+            <a href="#experiencias">Tours</a>
             <Link to="/sobre" style={{ color:"inherit", textDecoration:"none", fontWeight:600 }}>Sobre nós</Link>
             <a href="#contacto">Contacto</a>
           </div>
@@ -147,11 +151,7 @@ function HomePage() {
               <Search size={21} />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Pesquisar serviços, atividades ou experiências..." aria-label="Pesquisar serviços" />
             </div>
-            <div className="stats" aria-label="Resumo do portal">
-              <span><strong>8</strong>Categorias</span>
-              <span><strong>{totalListings}+</strong>Parceiros</span>
-              <span><strong>2</strong>Ilhas</span>
-            </div>
+            
           </div>
 
           <div className="heroVisual" aria-label="Paisagem tropical estilizada">
@@ -167,20 +167,14 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="filters" aria-label="Filtros de categorias">
-        <button className={active === "todos" ? "active" : ""} onClick={() => setActive("todos")}>Todos</button>
-        {categories.map(({ id, title, icon: Icon }) => (
-          <button key={id} className={active === id ? "active" : ""} onClick={() => setActive(id)}>
-            <Icon size={17} /> {title}
-          </button>
-        ))}
-      </section>
-
+    
       <section className="content" id="servicos">
         <div className="sectionIntro">
-          <p className="eyebrow">Catálogo turístico</p>
+          {/*<p className="eyebrow">Catálogo turístico</p>
           <h2>Serviços que fazem sentido publicitar</h2>
-          <p>Cada categoria foi pensada para receber parceiros, anúncios, reservas, contactos diretos e conteúdo editorial sobre experiências no arquipélago.</p>
+          <p>Cada categoria foi pensada para receber parceiros, anúncios, 
+            reservas, contactos diretos e conteúdo editorial sobre experiências 
+            no arquipélago.</p>*/}
         </div>
         <div className="categoryStack">
           {visibleCategories.map((category) => (
@@ -272,13 +266,60 @@ function ServiceCategory({ category }) {
       </div>
       <div className="serviceGrid">
         {category.services.map((service) => {
-          const SIcon = service.icon;
           return (
             <article key={service.id} className="serviceCard" style={{ cursor:"pointer" }} onClick={() => navigate(`/categorias/${category.id}/${service.id}`)}>
-              <SIcon size={25} />
-              <h4>{service.name}</h4>
-              <p>{service.description}</p>
-              <span>{service.label}</span>
+              {/* 🔤 NOME ANTES DA IMAGEM */}
+              <h4 style={{ 
+                fontSize: "1.1rem", 
+                fontWeight: 700, 
+                color: "var(--forest-deep)",
+                marginBottom: "8px",
+                textTransform: "capitalize"
+              }}>
+                {service.name}
+              </h4>
+              
+              {/* 🖼️ IMAGEM */}
+              <div style={{ 
+                width: "100%", 
+                height: "160px", 
+                borderRadius: "12px", 
+                overflow: "hidden",
+                marginBottom: "12px",
+                background: "#f0f4f0"
+              }}>
+                <img 
+                  src={service.image || "/images/categories/default.avif"} 
+                  alt={service.name}
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "cover",
+                    display: "block"
+                  }}
+                />
+              </div>
+              
+              {/* ❌ ÍCONE REMOVIDO - SEM SIcon */}
+              <p style={{ fontSize: "0.9rem", color: "var(--muted)", marginBottom: "8px" }}>
+                {service.description}
+              </p>
+              
+              {service.label && (
+                <span style={{
+                  display: "inline-block",
+                  background: "var(--forest)",
+                  color: "white",
+                  fontSize: "0.7rem",
+                  fontWeight: 700,
+                  padding: "3px 12px",
+                  borderRadius: "999px",
+                  marginBottom: "8px"
+                }}>
+                  {service.label}
+                </span>
+              )}
+              
               <div style={{ marginTop:"auto", paddingTop:"10px", display:"flex", alignItems:"center", justifyContent:"space-between", fontSize:"0.75rem", color:"var(--forest)", fontWeight:700 }}>
                 <span>{service.listings.length} {service.listings.length === 1 ? "resultado" : "resultados"}</span>
                 <ChevronRight size={14} />
@@ -291,6 +332,97 @@ function ServiceCategory({ category }) {
   );
 }
 
+// main.jsx - adicione este componente
+
+/* ─── Category Page Preview (seção expandida na home) ─── */
+function CategoryPagePreview({ category }) {
+  const Icon = category.icon;
+  const navigate = useNavigate();
+  
+  return (
+    <section className="category-page-preview" style={{
+      padding: "40px 20px",
+      margin: "40px 0",
+      background: "white",
+      borderRadius: "24px",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.04)"
+    }}>
+      <div style={{ 
+        maxWidth: "1200px", 
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "32px"
+      }}>
+        {/* Cabeçalho estilo CategoryPage */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: "2px solid var(--line)",
+          paddingBottom: "20px"
+        }}>
+          <div>
+            <p className="cp-eyebrow" style={{ 
+              color: "var(--forest)", 
+              fontWeight: 700, 
+              textTransform: "uppercase", 
+              letterSpacing: "0.1em", 
+              fontSize: "0.8rem",
+              margin: 0
+            }}>
+              O que oferecemos
+            </p>
+            <h2 style={{ 
+              fontSize: "1.8rem", 
+              color: "var(--forest-deep)", 
+              margin: "8px 0 0",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px"
+            }}>
+              <Icon size={28} /> {category.title}
+            </h2>
+          </div>
+          <button 
+            onClick={() => navigate(`/categorias/${category.id}`)}
+            style={{
+              padding: "10px 24px",
+              background: "var(--forest)",
+              color: "white",
+              border: "none",
+              borderRadius: "999px",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+          >
+            Ver todos <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {/* Grid de serviços estilo CategoryPage */}
+        <div className="cp-services-grid" style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "24px"
+        }}>
+          {category.services.slice(0, 4).map((service) => (
+            <ServiceCard 
+              key={service.id} 
+              service={service} 
+              categoryId={category.id} 
+              variant="home" 
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 /* ─── App ─── */
 function App() {
   return (
