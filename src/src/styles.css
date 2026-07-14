@@ -1,4 +1,3 @@
-/* styles.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap");
 
 :root {
@@ -10,7 +9,6 @@
   --aqua: #50b8ca;
   --forest: #0f6f3d;
   --forest-deep: #073f25;
-  --forest-light: #e8f5e9;
   --leaf: #58b957;
   --lime: #b8df72;
   --coral: #ee8067;
@@ -19,18 +17,12 @@
   --mist: #dfeccb;
   --surface: #fff8e8;
   --white: #ffffff;
-  --line: rgba(16, 36, 58, 0.08);
-  --shadow: 0 24px 70px rgba(7, 63, 37, 0.12);
-  --shadow-sm: 0 4px 20px rgba(7, 63, 37, 0.06);
-  --radius: 24px;
-  --radius-sm: 16px;
-  --max-width: 1180px;
+  --line: rgba(16, 36, 58, 0.12);
+  --shadow: 0 24px 70px rgba(7, 63, 37, 0.18);
 }
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -41,12 +33,16 @@ body {
   margin: 0;
   font-family: "Inter", system-ui, sans-serif;
   color: var(--ink);
-  background: 
-    radial-gradient(circle at 20% 10%, rgba(88, 185, 87, 0.04) 0%, transparent 60%),
-    radial-gradient(circle at 80% 90%, rgba(80, 184, 202, 0.04) 0%, transparent 50%),
-    linear-gradient(180deg, #e4ece0 0%, #d4e0ce 30%, #c4d4be 60%, #b6cbb0 85%, #aac2a4 100%);
-  background-attachment: fixed;
-  min-height: 100vh;
+  background-color: #eef1dd;
+  background-image:
+    radial-gradient(circle at 10% 4%, rgba(88, 185, 87, 0.10), transparent 42%),
+    radial-gradient(circle at 92% 2%, rgba(80, 184, 202, 0.09), transparent 44%),
+    linear-gradient(180deg, rgba(243, 236, 215, 0.5) 0%, rgba(226, 238, 206, 0.38) 38%, rgba(203, 223, 175, 0.46) 100%),
+    url("/images/praia-cristalina.png");
+  background-size: cover, cover, cover, cover;
+  background-position: center, center, center, top center;
+  background-attachment: fixed, fixed, fixed, fixed;
+  background-repeat: no-repeat;
 }
 
 button,
@@ -59,13 +55,6 @@ a {
   text-decoration: none;
 }
 
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* ─── Hero ─── */
 .hero {
   min-height: 92vh;
   padding: 28px clamp(20px, 5vw, 72px) 54px;
@@ -78,21 +67,12 @@ a {
   overflow: hidden;
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: 
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  pointer-events: none;
-}
-
 .hero::after {
   content: "";
   position: absolute;
   inset: auto 0 0;
-  height: 30%;
-  background: linear-gradient(0deg, #d4e0ce, transparent);
+  height: 26%;
+  background: linear-gradient(0deg, var(--cream), rgba(255, 250, 241, 0));
   pointer-events: none;
 }
 
@@ -100,22 +80,17 @@ a {
 .heroGrid,
 .filters,
 .content,
-.whatWeDo,
 .experienceBand,
 .footer {
   position: relative;
   z-index: 1;
 }
 
-/* ─── Navegação ─── */
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 20px;
 }
 
 .brand {
@@ -139,34 +114,9 @@ a {
 
 .navLinks {
   display: flex;
-  gap: 28px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.navLinks a {
-  transition: color 0.2s;
-  position: relative;
-}
-
-.navLinks a::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--lime);
-  transition: width 0.3s;
-}
-
-.navLinks a:hover::after {
-  width: 100%;
-}
-
-.navLinks a:hover {
-  color: white;
+  gap: 24px;
+  font-weight: 700;
+  font-size: 0.93rem;
 }
 
 .iconButton {
@@ -179,25 +129,14 @@ a {
   display: none;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 
-.iconButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-/* ─── Hero Grid ─── */
 .heroGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 0.88fr);
   gap: clamp(34px, 6vw, 90px);
   align-items: center;
   padding-top: clamp(58px, 10vh, 108px);
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
 .eyebrow {
@@ -289,7 +228,6 @@ h1 {
   font-size: 1.85rem;
 }
 
-/* ─── Hero Visual ─── */
 .heroVisual {
   min-height: 540px;
   position: relative;
@@ -376,18 +314,10 @@ h1 {
   align-items: center;
   gap: 8px;
   font-weight: 800;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.itinerary button:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 30px rgba(7, 63, 37, 0.3);
-}
-
-/* ─── Filtros ─── */
 .filters {
-  max-width: var(--max-width);
+  width: min(1180px, calc(100% - 34px));
   margin: -28px auto 0;
   padding: 10px;
   display: flex;
@@ -397,8 +327,6 @@ h1 {
   border-radius: 999px;
   background: rgba(255, 248, 232, 0.92);
   box-shadow: 0 18px 44px rgba(7, 63, 37, 0.12);
-  position: relative;
-  z-index: 2;
 }
 
 .filters button {
@@ -413,12 +341,6 @@ h1 {
   white-space: nowrap;
   font-weight: 800;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-}
-
-.filters button:hover {
-  background: rgba(7, 63, 37, 0.06);
-  transform: scale(1.02);
 }
 
 .filters button.active {
@@ -426,28 +348,14 @@ h1 {
   background: linear-gradient(135deg, var(--forest-deep), var(--forest));
 }
 
-/* ─── SEÇÃO: CATÁLOGO TURÍSTICO ─── */
 .content {
-  max-width: var(--max-width);
+  width: min(1180px, calc(100% - 34px));
   margin: 82px auto 0;
   padding: clamp(28px, 4vw, 48px);
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* ─── SEÇÃO: O QUE FAZEMOS ─── */
-.whatWeDo {
-  max-width: var(--max-width);
-  margin: 48px auto 0;
-  padding: clamp(28px, 4vw, 48px);
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 232, 0.9), rgba(235, 244, 214, 0.86));
+  box-shadow: 0 24px 70px rgba(7, 63, 37, 0.08);
 }
 
 .sectionIntro {
@@ -456,7 +364,7 @@ h1 {
 }
 
 .sectionIntro h2,
-.whatWeDo h2 {
+.experienceBand h2 {
   margin-bottom: 16px;
   color: var(--forest-deep);
   font-size: clamp(2.4rem, 5vw, 4.5rem);
@@ -464,7 +372,7 @@ h1 {
 }
 
 .sectionIntro p,
-.whatWeDo p,
+.experienceBand p,
 .categoryHeader p,
 .serviceCard p,
 .footer p {
@@ -472,10 +380,9 @@ h1 {
   line-height: 1.7;
 }
 
-/* ─── Categorias ─── */
 .categoryStack {
   display: grid;
-  gap: 48px;
+  gap: 34px;
 }
 
 .category {
@@ -505,95 +412,65 @@ h1 {
   font-weight: 800;
 }
 
-/* ─── Service Grid ─── */
 .serviceGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 16px 50px rgba(16, 36, 58, 0.08);
 }
 
 .serviceCard {
   min-height: 210px;
-  padding: 24px;
-  border-radius: var(--radius-sm);
-  background: var(--white);
-  border: 1px solid var(--line);
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
+  padding: 28px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(140deg, rgba(88, 185, 87, 0.13), rgba(80, 184, 202, 0.08) 48%, rgba(255, 255, 255, 0) 72%),
+    var(--surface);
 }
 
-.serviceCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
-  border-color: var(--forest);
+.serviceCard:nth-child(3n) {
+  border-right: 0;
+}
+
+.serviceCard svg {
+  color: var(--forest);
+  margin-bottom: 18px;
 }
 
 .serviceCard h4 {
+  margin-bottom: 10px;
   font-size: 1.05rem;
-  color: var(--forest-deep);
-  margin-bottom: 8px;
 }
 
-.serviceCard .service-image {
-  width: 100%;
-  height: 160px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  margin-bottom: 12px;
-  background: #f0f4f0;
-}
-
-.serviceCard .service-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s;
-}
-
-.serviceCard:hover .service-image img {
-  transform: scale(1.03);
-}
-
-.serviceCard p {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin-bottom: 12px;
-  flex: 1;
-}
-
-.serviceCard .service-label {
-  display: inline-block;
-  background: var(--forest-light);
-  color: var(--forest-deep);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 3px 12px;
+.serviceCard span {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 7px 10px;
   border-radius: 999px;
-  margin-bottom: 12px;
-  align-self: flex-start;
-}
-
-.serviceCard .service-footer {
-  margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  color: var(--forest-deep);
+  background: rgba(88, 185, 87, 0.16);
   font-size: 0.75rem;
-  color: var(--forest);
-  font-weight: 700;
+  font-weight: 800;
 }
 
-/* ─── Seções de Destinos e Pacotes ─── */
 .destinosSection,
 .pacotesSection {
-  max-width: var(--max-width);
+  width: min(980px, calc(100% - 34px));
   margin: 76px auto 0;
-  padding: 0 20px;
+}
+
+.destinosSection .sectionIntro,
+.pacotesSection .sectionIntro {
+  display: inline-block;
+  padding: 20px 28px;
+  border-radius: 22px;
+  background: rgba(255, 248, 232, 0.88);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 14px 40px rgba(7, 63, 37, 0.12);
 }
 
 .destinosSection .eyebrow,
@@ -603,13 +480,13 @@ h1 {
   gap: 8px;
 }
 
-/* ─── Slideshow ─── */
+/* ── Slideshow genérico ── */
 .slideshow {
   position: relative;
-  border-radius: var(--radius);
+  border-radius: 26px;
   overflow: hidden;
-  box-shadow: var(--shadow);
-  background: var(--white);
+  box-shadow: 0 24px 70px rgba(7, 63, 37, 0.14);
+  background: var(--surface);
 }
 
 .slideshowViewport {
@@ -630,32 +507,27 @@ h1 {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(7, 63, 37, 0.6);
+  background: rgba(7, 63, 37, 0.55);
   color: var(--white);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.16s, transform 0.2s;
+  transition: background 0.16s;
   z-index: 2;
 }
 
 .slideshowArrow:hover {
-  background: rgba(7, 63, 37, 0.85);
-  transform: translateY(-50%) scale(1.05);
+  background: rgba(7, 63, 37, 0.82);
 }
 
-.slideshowArrow--prev {
-  left: 18px;
-}
-.slideshowArrow--next {
-  right: 18px;
-}
+.slideshowArrow--prev { left: 18px; }
+.slideshowArrow--next { right: 18px; }
 
 .slideshowDots {
   position: absolute;
@@ -668,8 +540,8 @@ h1 {
 }
 
 .slideshowDot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.5);
@@ -680,11 +552,11 @@ h1 {
 
 .slideshowDot.active {
   background: var(--white);
-  width: 24px;
+  width: 22px;
   border-radius: 999px;
 }
 
-/* ─── Destino Slide ─── */
+/* ── Slide: destino ── */
 .destinoSlide {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -703,11 +575,10 @@ h1 {
 }
 
 .destinoSlideBody {
-  padding: clamp(24px, 3vw, 40px);
+  padding: clamp(20px, 3vw, 36px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: var(--white);
 }
 
 .destinoSlideBody h3 {
@@ -732,7 +603,7 @@ h1 {
   margin-bottom: 10px !important;
 }
 
-/* ─── Pacote Slide ─── */
+/* ── Slide: pacote ── */
 .pacoteSlide {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -764,11 +635,10 @@ h1 {
 }
 
 .pacoteSlideBody {
-  padding: clamp(24px, 3vw, 40px);
+  padding: clamp(20px, 3vw, 36px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: var(--white);
 }
 
 .pacoteSlideBody h3 {
@@ -801,32 +671,32 @@ h1 {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 20px;
+  padding: 9px 18px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--forest-deep), var(--forest));
   color: var(--white);
   font-weight: 800;
   font-size: 0.85rem;
   text-decoration: none;
-  transition: opacity 0.16s, transform 0.2s;
+  transition: opacity 0.16s;
 }
 
 .pacoteCardBtn:hover {
   opacity: 0.88;
-  transform: scale(1.02);
 }
 
-/* ─── Footer ─── */
+
 .footer {
-  max-width: var(--max-width);
+  width: min(1180px, calc(100% - 34px));
   margin: 56px auto 0;
-  padding: 40px 20px 48px;
+  padding: 30px 32px 36px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
   gap: 20px;
-  border-top: 1px solid var(--line);
+  border-radius: 26px;
+  background: rgba(255, 248, 232, 0.88);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 16px 46px rgba(7, 63, 37, 0.12);
   color: var(--forest-deep);
 }
 
@@ -837,36 +707,9 @@ h1 {
 
 .footer a {
   color: var(--ocean);
-  font-weight: 700;
-  transition: color 0.2s;
+  font-weight: 800;
 }
 
-.footer a:hover {
-  color: var(--forest-deep);
-}
-
-.footer .admin-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 20px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--white);
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-
-.footer .admin-link:hover {
-  background: var(--forest-deep);
-  color: var(--white);
-  border-color: var(--forest-deep);
-}
-
-/* ─── Responsividade ─── */
 @media (max-width: 960px) {
   .hero {
     min-height: auto;
@@ -892,26 +735,21 @@ h1 {
 
   .destinoSlideImg,
   .pacoteSlideImg {
-    height: 200px;
+    height: 190px;
   }
 
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
+  .serviceCard:nth-child(3n) {
+    border-right: 1px solid var(--line);
+  }
+
+  .serviceCard:nth-child(2n) {
+    border-right: 0;
   }
 }
 
 @media (max-width: 680px) {
   .hero {
-    padding: 20px 0 40px;
-  }
-
-  .nav {
-    padding: 0 16px;
-  }
-
-  .heroGrid {
-    padding: 40px 16px 0;
+    padding: 22px 17px 42px;
   }
 
   .navLinks {
@@ -922,14 +760,17 @@ h1 {
     display: inline-flex;
   }
 
+  .heroGrid {
+    padding-top: 46px;
+  }
+
   h1 {
     font-size: clamp(2.85rem, 15vw, 4.1rem);
   }
 
   .searchBar {
-    min-height: 54px;
-    border-radius: 16px;
-    padding: 8px 12px 8px 16px;
+    min-height: 58px;
+    border-radius: 22px;
   }
 
   .stats span {
@@ -962,67 +803,35 @@ h1 {
   }
 
   .filters {
-    border-radius: 16px;
-    margin-top: -20px;
-    padding: 8px;
+    border-radius: 22px;
   }
 
-  .filters button {
-    padding: 10px 14px;
-    font-size: 0.8rem;
-  }
-
-  .content,
-  .whatWeDo {
-    margin-top: 40px;
-    padding: 20px 16px;
-    border-radius: var(--radius-sm);
-  }
-
-  .categoryHeader {
-    flex-direction: column;
+  .categoryHeader,
+  .footer {
     align-items: flex-start;
+    flex-direction: column;
   }
 
   .serviceGrid {
     grid-template-columns: 1fr;
-    gap: 16px;
   }
 
-  .serviceCard {
-    padding: 16px;
-    min-height: 0;
-  }
-
-  .serviceCard .service-image {
-    height: 140px;
+  .serviceCard,
+  .serviceCard:nth-child(2n),
+  .serviceCard:nth-child(3n) {
+    border-right: 0;
   }
 
   .slideshowArrow {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
   }
 
-  .slideshowArrow--prev {
-    left: 8px;
-  }
-  .slideshowArrow--next {
-    right: 8px;
-  }
+  .slideshowArrow--prev { left: 10px; }
+  .slideshowArrow--next { right: 10px; }
 
   .destinoSlideBody,
   .pacoteSlideBody {
-    padding: 20px 16px;
-  }
-
-  .destinosSection,
-  .pacotesSection {
-    margin-top: 48px;
-    padding: 0 16px;
-  }
-
-  .footer {
-    padding: 32px 16px 40px;
-    gap: 16px;
+    padding: 26px 20px;
   }
 }

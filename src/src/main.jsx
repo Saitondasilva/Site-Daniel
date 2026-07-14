@@ -1,4 +1,4 @@
-// main.jsx
+//main.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
@@ -15,6 +15,7 @@ import AboutPage from "./AboutPage.jsx";
 import AdminPage from "./AdminPage.jsx";
 import "./styles.css";
 
+/* ─── Scroll para o topo em cada mudança de página ─── */
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -27,6 +28,7 @@ function ScrollToTop() {
   return null;
 }
 
+/* ─── Slideshow genérico (destinos / pacotes) ─── */
 function Slideshow({ items, renderItem, autoPlay = true, interval = 6000, className = "" }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -82,6 +84,7 @@ function Slideshow({ items, renderItem, autoPlay = true, interval = 6000, classN
   );
 }
 
+/* ─── Mobile Menu ─── */
 function MobileMenu({ open, onClose }) {
   const { user, logout } = useAuth();
 
@@ -97,16 +100,19 @@ function MobileMenu({ open, onClose }) {
     <>
       <div onClick={onClose} style={{ position:"fixed", inset:0, zIndex:98, background:"rgba(7,63,37,.55)", opacity:open?1:0, pointerEvents:open?"auto":"none", transition:"opacity 0.25s" }} />
       <nav aria-label="Menu principal" style={{ position:"fixed", top:0, left:0, bottom:0, zIndex:99, width:"min(300px,85vw)", background:"var(--cream)", padding:"28px 24px", display:"flex", flexDirection:"column", gap:"8px", transform:open?"translateX(0)":"translateX(-100%)", transition:"transform 0.28s cubic-bezier(.4,0,.2,1)", overflowY:"auto" }}>
+
+        {/* Header do drawer */}
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"16px" }}>
           <Link to="/sobre" onClick={onClose} style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.1rem", fontWeight:600, color:"var(--forest-deep)", textDecoration:"none" }}>STP Verde</Link>
           <button onClick={onClose} aria-label="Fechar menu" style={{ background:"none", border:"none", cursor:"pointer", color:"var(--forest-deep)", padding:4 }}><X size={22} /></button>
         </div>
 
+        {/* Auth block */}
         {user && (
           <div style={{ padding:"12px 14px", borderRadius:"14px", background:"rgba(88,185,87,.1)", border:"1px solid rgba(88,185,87,.2)", marginBottom:"8px" }}>
             <p style={{ margin:"0 0 4px", fontSize:"0.75rem", fontWeight:800, color:"var(--forest)", textTransform:"uppercase", letterSpacing:"0.1em" }}>Sessão iniciada</p>
             <p style={{ margin:"0 0 10px", fontWeight:700, color:"var(--ink)", fontSize:"0.93rem" }}>{user.name}</p>
-            <button onClick={() => { logout(); onClose(); }} style={{ display:"flex", alignItems:"center", gap:"7px", background:"none", border:"1px solid var(--line)", borderRadius:"8px", padding:"7px 12px", color:"var(--muted)", fontSize:"0.82rem", fontWeight:700, cursor:"pointer" }}>
+            <button onClick={() => { logout(); onClose(); }} style={{ display:"flex", alignItems:"center", gap:"7px", background:"none", border:"1px solid var(--line)", borderRadius:"8px", padding:"7px 12px", color:"var(--muted)", fontSize:"0.82rem", fontWeight:700, cursor:"pointer", fontFamily:"var(--font)" }}>
               <LogOut size={14} /> Terminar sessão
             </button>
           </div>
@@ -134,6 +140,7 @@ function MobileMenu({ open, onClose }) {
   );
 }
 
+/* ─── Home Page ─── */
 function HomePage() {
   const [active, setActive] = useState("todos");
   const [query, setQuery] = useState("");
@@ -149,12 +156,15 @@ function HomePage() {
       .filter((c) => c.services.length > 0);
   }, [active, query]);
 
+  const totalListings = categories.reduce((sum, c) => sum + c.services.reduce((s2, sv) => s2 + sv.listings.length, 0), 0);
+
   return (
     <main>
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <section className="hero" id="inicio">
         <nav className="nav" aria-label="Navegação principal">
+          {/* Logo → abre /sobre */}
           <Link to="/sobre" className="brand" aria-label="Sobre o STP Verde" title="Sobre nós">
             <img src="public/images/logotipo.jpeg" alt="STP Verde" />
           </Link>
@@ -164,17 +174,18 @@ function HomePage() {
             <Link to="/categorias/alojamento/Transporte">Transporte</Link>
             <Link to="/categorias/alojamento/Excursões">Excursões</Link>
             <Link to="/categorias/alojamento/Tours">Tours</Link>
-            <Link to="/sobre">Sobre nós</Link>
+            <Link to="/sobre" style={{ color:"inherit", textDecoration:"none", fontWeight:600 }}>Sobre nós</Link>
             <a href="#contacto">Contacto</a>
           </div>
 
+          {/* Auth — desktop */}
           {user && (
             <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
               <span style={{ display:"flex", alignItems:"center", gap:"6px", fontSize:"0.82rem", fontWeight:700, color:"rgba(255,255,255,.85)" }}>
                 <User size={15} /> {user.name.split(" ")[0]}
               </span>
               <button onClick={logout} aria-label="Terminar sessão"
-                style={{ background:"rgba(255,255,255,.12)", border:"1px solid rgba(255,255,255,.25)", borderRadius:"999px", padding:"7px 14px", color:"rgba(255,255,255,.85)", fontSize:"0.8rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:"5px", transition:"background .15s" }}
+                style={{ background:"rgba(255,255,255,.12)", border:"1px solid rgba(255,255,255,.25)", borderRadius:"999px", padding:"7px 14px", color:"rgba(255,255,255,.85)", fontSize:"0.8rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:"5px", fontFamily:"var(--font)", transition:"background .15s" }}
                 onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.22)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,.12)"}>
                 <LogOut size={14} /> Sair
@@ -196,6 +207,7 @@ function HomePage() {
               <Search size={21} />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Pesquisar serviços, atividades ou experiências..." aria-label="Pesquisar serviços" />
             </div>
+            
           </div>
 
           <div className="heroVisual" aria-label="Paisagem tropical estilizada">
@@ -211,11 +223,14 @@ function HomePage() {
         </div>
       </section>
 
+    
       <section className="content" id="servicos">
         <div className="sectionIntro">
-          <p className="eyebrow">Catálogo turístico</p>
+          {/*<p className="eyebrow">Catálogo turístico</p>
           <h2>Serviços que fazem sentido publicitar</h2>
-          <p>Cada categoria foi pensada para receber parceiros, anúncios, reservas, contactos diretos e conteúdo editorial sobre experiências no arquipélago.</p>
+          <p>Cada categoria foi pensada para receber parceiros, anúncios, 
+            reservas, contactos diretos e conteúdo editorial sobre experiências 
+            no arquipélago.</p>*/}
         </div>
         <div className="categoryStack">
           {visibleCategories.map((category) => (
@@ -283,7 +298,32 @@ function HomePage() {
         </div>
         <Link to="/sobre" style={{ color:"inherit", fontSize:"0.9rem", fontWeight:700 }}>Sobre nós →</Link>
         <a href="mailto:info@stpverde.st">info@stpverde.st</a>
-        <Link to="/admin" className="admin-link">
+        <Link
+          to="/admin"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "7px",
+            padding: "9px 18px",
+            borderRadius: "999px",
+            border: "1px solid rgba(7,63,37,0.16)",
+            background: "rgba(7,63,37,0.06)",
+            color: "var(--forest-deep)",
+            fontSize: "0.8rem",
+            fontWeight: 700,
+            textDecoration: "none",
+            letterSpacing: "0.04em",
+            transition: "background 0.2s, color 0.2s, border-color 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(7,63,37,0.14)";
+            e.currentTarget.style.borderColor = "rgba(7,63,37,0.3)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(7,63,37,0.06)";
+            e.currentTarget.style.borderColor = "rgba(7,63,37,0.16)";
+          }}
+        >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
@@ -294,6 +334,7 @@ function HomePage() {
   );
 }
 
+/* ─── Service Category ─── */
 function ServiceCategory({ category }) {
   const Icon = category.icon;
   const navigate = useNavigate();
@@ -307,7 +348,7 @@ function ServiceCategory({ category }) {
         <div style={{ display:"flex", alignItems:"center", gap:"14px", flexShrink:0 }}>
           <span>{category.services.length} Serviços</span>
           <button onClick={() => navigate(`/categorias/${category.id}`)}
-            style={{ border:"1.5px solid var(--forest)", borderRadius:"999px", padding:"8px 20px", background:"transparent", color:"var(--forest-deep)", fontWeight:800, fontSize:"0.82rem", cursor:"pointer", display:"flex", alignItems:"center", gap:"5px", whiteSpace:"nowrap", transition:"background .16s,color .16s" }}
+            style={{ border:"1.5px solid var(--forest)", borderRadius:"999px", padding:"8px 18px", background:"transparent", color:"var(--forest-deep)", fontWeight:800, fontSize:"0.82rem", cursor:"pointer", display:"flex", alignItems:"center", gap:"5px", whiteSpace:"nowrap", transition:"background .16s,color .16s" }}
             onMouseEnter={(e) => { e.currentTarget.style.background="var(--forest)"; e.currentTarget.style.color="white"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background="transparent"; e.currentTarget.style.color="var(--forest-deep)"; }}>
             Ver tudo <ChevronRight size={14} />
@@ -315,27 +356,161 @@ function ServiceCategory({ category }) {
         </div>
       </div>
       <div className="serviceGrid">
-        {category.services.map((service) => (
-          <article key={service.id} id={`servico-${service.id}`} className="serviceCard" onClick={() => navigate(`/categorias/${category.id}/${service.id}`)}>
-            <h4>{service.name}</h4>
-            <div className="service-image">
-              <img src={service.image || "/images/categories/default.avif"} alt={service.name} />
-            </div>
-            <p>{service.description}</p>
-            {service.label && (
-              <span className="service-label">{service.label}</span>
-            )}
-            <div className="service-footer">
-              <span>{service.listings.length} {service.listings.length === 1 ? "resultado" : "resultados"}</span>
-              <ChevronRight size={14} />
-            </div>
-          </article>
-        ))}
+        {category.services.map((service) => {
+          return (
+            <article key={service.id} id={`servico-${service.id}`} className="serviceCard" style={{ cursor:"pointer", scrollMarginTop:"110px" }} onClick={() => navigate(`/categorias/${category.id}/${service.id}`)}>
+              {/* 🔤 NOME ANTES DA IMAGEM */}
+              <h4 style={{ 
+                fontSize: "1.1rem", 
+                fontWeight: 700, 
+                color: "var(--forest-deep)",
+                marginBottom: "8px",
+                textTransform: "capitalize"
+              }}>
+                {service.name}
+              </h4>
+              
+              {/* 🖼️ IMAGEM */}
+              <div style={{ 
+                width: "100%", 
+                height: "160px", 
+                borderRadius: "12px", 
+                overflow: "hidden",
+                marginBottom: "12px",
+                background: "#f0f4f0"
+              }}>
+                <img 
+                  src={service.image || "/images/categories/default.avif"} 
+                  alt={service.name}
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "cover",
+                    display: "block"
+                  }}
+                />
+              </div>
+              
+              <p style={{ fontSize: "0.9rem", color: "var(--muted)", marginBottom: "8px" }}>
+                {service.description}
+              </p>
+              
+              {service.label && (
+                <span style={{
+                  display: "inline-block",
+                  background: "var(--forest)",
+                  color: "white",
+                  fontSize: "0.7rem",
+                  fontWeight: 700,
+                  padding: "3px 12px",
+                  borderRadius: "999px",
+                  marginBottom: "8px"
+                }}>
+                  {service.label}
+                </span>
+              )}
+              
+              <div style={{ marginTop:"auto", paddingTop:"10px", display:"flex", alignItems:"center", justifyContent:"space-between", fontSize:"0.75rem", color:"var(--forest)", fontWeight:700 }}>
+                <span>{service.listings.length} {service.listings.length === 1 ? "resultado" : "resultados"}</span>
+                <ChevronRight size={14} />
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
 }
 
+function CategoryPagePreview({ category }) {
+  const Icon = category.icon;
+  const navigate = useNavigate();
+  
+  return (
+    <section className="category-page-preview" style={{
+      padding: "40px 20px",
+      margin: "40px 0",
+      background: "white",
+      borderRadius: "24px",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.04)"
+    }}>
+      <div style={{ 
+        maxWidth: "1200px", 
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "32px"
+      }}>
+      
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: "2px solid var(--line)",
+          paddingBottom: "20px"
+        }}>
+          <div>
+            <p className="cp-eyebrow" style={{ 
+              color: "var(--forest)", 
+              fontWeight: 700, 
+              textTransform: "uppercase", 
+              letterSpacing: "0.1em", 
+              fontSize: "0.8rem",
+              margin: 0
+            }}>
+              O que oferecemos
+            </p>
+            <h2 style={{ 
+              fontSize: "1.8rem", 
+              color: "var(--forest-deep)", 
+              margin: "8px 0 0",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px"
+            }}>
+              <Icon size={28} /> {category.title}
+            </h2>
+          </div>
+          <button 
+            onClick={() => navigate(`/categorias/${category.id}`)}
+            style={{
+              padding: "10px 24px",
+              background: "var(--forest)",
+              color: "white",
+              border: "none",
+              borderRadius: "999px",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+          >
+            Ver todos <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {/* Grid de serviços estilo CategoryPage */}
+        <div className="cp-services-grid" style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "24px"
+        }}>
+          {category.services.slice(0, 4).map((service) => (
+            <ServiceCard 
+              key={service.id} 
+              service={service} 
+              categoryId={category.id} 
+              variant="home" 
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+/* ─── App ─── */
 function App() {
   return (
     <AdminProvider>
