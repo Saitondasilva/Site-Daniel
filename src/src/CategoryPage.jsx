@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, ChevronRight, Phone, Mail } from "lucide-react";
 import { categories } from "./categories.js";
 import "./categoryPage.css";
+//import "./categoryPage1.css";
+import "./styles.css";
 
 export default function CategoryPage() {
   const { id } = useParams();

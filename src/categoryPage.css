@@ -1,4 +1,4 @@
-/* ── CategoryPage styles ── */
+/* categoryPage.css - Versão LIMPA (remova todo o conteúdo e use apenas isso) */
 
 .cp-root {
   color: var(--ink);
@@ -278,54 +278,6 @@
   color: var(--white);
 }
 
-/* CTA card para novos parceiros */
-.cp-partner-cta-card {
-  background: linear-gradient(140deg, rgba(7, 63, 37, 0.04), rgba(6, 108, 134, 0.06));
-  border-style: dashed;
-  justify-content: center;
-}
-
-.cp-cta-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.cp-cta-inner h3 {
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.25rem;
-  color: var(--forest-deep);
-  margin: 0;
-}
-
-.cp-cta-inner p {
-  font-size: 0.88rem;
-  color: var(--muted);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.cp-cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 0;
-  border-radius: 999px;
-  padding: 11px 20px;
-  color: var(--white);
-  background: linear-gradient(135deg, var(--forest-deep), var(--forest));
-  font-size: 0.88rem;
-  font-weight: 800;
-  cursor: pointer;
-  width: fit-content;
-  margin-top: 4px;
-  transition: opacity 0.16s;
-}
-
-.cp-cta-btn:hover {
-  opacity: 0.88;
-}
-
 /* ── Contact band ── */
 .cp-contact-band {
   margin-top: 64px;
@@ -421,31 +373,6 @@
   color: var(--forest-deep);
 }
 
-/* ── Responsive ── */
-@media (max-width: 680px) {
-  .cp-hero {
-    min-height: 55vh;
-    padding: 24px 18px;
-  }
-
-  .cp-services-grid,
-  .cp-partners-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .cp-contact-band {
-    flex-direction: column;
-  }
-
-  .cp-contact-actions {
-    width: 100%;
-  }
-
-  .cp-contact-link {
-    justify-content: center;
-  }
-}
-
 /* ── Service card clicável ── */
 .cp-service-card--clickable {
   cursor: pointer;
@@ -499,4 +426,53 @@
 
 .cp-service-card--clickable:hover .cp-service-arrow {
   color: var(--forest-deep);
+}
+
+/* ── Responsividade ── */
+@media (max-width: 768px) {
+  .cp-nav-links {
+    display: none !important;
+  }
+  
+  .cp-menu-btn {
+    display: flex !important;
+  }
+  
+  .cp-hero {
+    min-height: 55vh;
+    padding: 24px 18px;
+  }
+
+  .cp-services-grid,
+  .cp-partners-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cp-contact-band {
+    flex-direction: column;
+  }
+
+  .cp-contact-actions {
+    width: 100%;
+  }
+
+  .cp-contact-link {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 769px) {
+  .cp-menu-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .cp-nav {
+    padding: 16px 16px !important;
+  }
+  
+  .cp-brand img {
+    height: 28px !important;
+  }
 }

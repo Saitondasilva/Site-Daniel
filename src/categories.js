@@ -81,7 +81,7 @@ export const categories = [
         name: "alojamento",
         description: "Conforto completo para explorar a capital e a costa.",
         icon: Hotel,
-        label: "Mais procurado",
+       
         image: "/images/categories/Alojamento.avif", 
         listings: [
           { id: "mucumbri", nome: "Mucumbri", tipo: "Resort 5★", local: "São Tomé ", descricao: "O resort mais aconchegante da ilha, com piscina convidativa e jardins tropicais exuberantes.", destaque: "Piscina infinita com vista mar", avaliacao: 4.9, avaliacoes: 312, preco: "Desde 180€/noite", tags: ["Piscina", "Spa", "Restaurante", "Wi-Fi", "AC"], contacto: { tel: "+239 222 1234", email: "reservas@omali.st", web: "omali.st" }, featured: true },
@@ -93,7 +93,7 @@ export const categories = [
         name: "Transporte",
         description: "Dias sem pressa entre praia, piscina e boa mesa.",
         icon: Palmtree,
-        label: "Premium",
+        
         image: "/images/categories/Jimmy.jpg", 
         listings: [
           { id: "bom-bom", nome: "Bom Bom Island Resort", tipo: "Resort boutique", local: "Ilha do Príncipe", descricao: "Um resort isolado no extremo norte do Príncipe, acessível apenas de barco. Bangalôs sobre a água, mergulho de classe mundial e silêncio absoluto.", destaque: "Bangalôs sobre a água", avaliacao: 5.0, avaliacoes: 143, preco: "Desde 350€/noite", tags: ["Isolado", "Mergulho", "All-inclusive", "Natureza"], contacto: { tel: "+239 225 1111", email: "info@bombom.st", web: "bombomisland.com" }, featured: true },
@@ -105,7 +105,7 @@ export const categories = [
         name: "Excursões",
         description: "Acolhimento familiar com alma santomense.",
         icon: Home,
-        label: "Autêntico",
+       
         image: "/images/pico-cao-grande.webp",
         listings: [
           { id: "casa-lilás", nome: "Casa Lilás", tipo: "Guesthouse", local: "São Tomé cidade", descricao: "Pequena guesthouse familiar no bairro histórico de São Tomé. Pequeno-almoço com produtos locais, proprietários simpáticos e dicas genuínas sobre a ilha.", destaque: "Pequeno-almoço local incluído", avaliacao: 4.6, avaliacoes: 84, preco: "Desde 45€/noite", tags: ["Familiar", "Centro", "Pequeno-almoço", "Autêntico"], contacto: { tel: "+239 222 7788", email: "casalilas@gmail.com", web: "" }, featured: true },
@@ -117,7 +117,7 @@ export const categories = [
         name: "Tours",
         description: "Natureza, silêncio e baixa pegada ambiental.",
         icon: TentTree,
-        label: "Eco",
+     
         image: "/images/tours.jpg",
         listings: [
           { id: "boa-vista-eco", nome: "Boa Vista Eco Lodge", tipo: "Eco-lodge", local: "Floresta do Sul", descricao: "Lodge sustentável construído com materiais locais no interior da floresta equatorial. Energia solar, água da nascente e trilhos privados com guia incluído.", destaque: "100% energia solar", avaliacao: 4.7, avaliacoes: 78, preco: "Desde 95€/noite", tags: ["Solar", "Floresta", "Trilhos", "Sustentável", "Guia"], contacto: { tel: "+239 222 6677", email: "ecolodge@boavista.st", web: "boavistaeco.st" }, featured: true },
@@ -129,7 +129,7 @@ export const categories = [
         name: "Eventos",
         description: "Natureza, silêncio e baixa pegada ambiental.",
         icon: TentTree,
-        label: "Eco",
+        
         image: "/images/tchiloli.jpg",
         listings: [
           { id: "boa-vista-eco", nome: "Boa Vista Eco Lodge", tipo: "Eco-lodge", local: "Floresta do Sul", descricao: "Lodge sustentável construído com materiais locais no interior da floresta equatorial. Energia solar, água da nascente e trilhos privados com guia incluído.", destaque: "100% energia solar", avaliacao: 4.7, avaliacoes: 78, preco: "Desde 95€/noite", tags: ["Solar", "Floresta", "Trilhos", "Sustentável", "Guia"], contacto: { tel: "+239 222 6677", email: "ecolodge@boavista.st", web: "boavistaeco.st" }, featured: true },

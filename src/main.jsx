@@ -189,9 +189,9 @@ function HomePage() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow"><MapPin size={16} /> São Tomé e Príncipe</p>
-            <h1>Descobre ilhas feitas de mar, cacau e histórias.</h1>
-            <p className="lead">O melhor portal de São Tomé para encontrar e publicitar alojamentos, transportes, tours, gastronomia, eventos, guias e comércio local em São Tomé e Príncipe.</p>
+            <p className="eyebrow"><MapPin size={17} /> São Tomé e Príncipe</p>
+            <h1 style={{ fontSize: 30 }}>Descobre ilhas feitas de mar, cacau e histórias.</h1>
+            <p className="lead" style={{ textAlign: 'justify' }}>O melhor portal de São Tomé para encontrar e publicitar alojamentos, transportes, tours, gastronomia, eventos, guias e comércio local em São Tomé e Príncipe.</p>
             <div className="searchBar">
               <Search size={21} />
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Pesquisar serviços, atividades ou experiências..." aria-label="Pesquisar serviços" />
@@ -205,18 +205,14 @@ function HomePage() {
             <div className="itinerary">
               <p>Roteiro em destaque</p>
               <strong>Praia Lagoa Azul, Pico Cão Grande e Museu Nacional</strong>
-              <button onClick={() => navigate("/categorias/tours")}>Ver excursões <ChevronRight size={16} /></button>
+              <button onClick={() => navigate("/categorias/tours")}>Pacotes Desponiveis <ChevronRight size={16} /></button>
             </div>
           </div>
         </div>
       </section>
 
       <section className="content" id="servicos">
-        <div className="sectionIntro">
-          <p className="eyebrow">Catálogo turístico</p>
-          <h2>Serviços que fazem sentido publicitar</h2>
-          <p>Cada categoria foi pensada para receber parceiros, anúncios, reservas, contactos diretos e conteúdo editorial sobre experiências no arquipélago.</p>
-        </div>
+        
         <div className="categoryStack">
           {visibleCategories.map((category) => (
             <ServiceCategory key={category.id} category={category} />
@@ -248,33 +244,37 @@ function HomePage() {
         />
       </section>
 
-      <section className="pacotesSection" id="experiencias">
-        <div className="sectionIntro">
-          <p className="eyebrow"><Package size={16} /> Roteiros prontos</p>
-          <h2>Pacotes oferecidos</h2>
-          <p>Combinações pensadas de alojamento, transporte e excursões para tornar o teu planeamento mais simples.</p>
+   <section className="pacotesSection" id="experiencias">
+  <div className="sectionIntro">
+    <p className="eyebrow"><Package size={16} /> Roteiros prontos</p>
+    <h2>Pacotes oferecidos</h2>
+    <p>Combinações pensadas de alojamento, transporte e excursões para tornar o teu planeamento mais simples.</p>
+  </div>
+  <Slideshow
+    className="pacotesSlideshow"
+    items={pacotes}
+    renderItem={(p) => (
+      <div className="pacoteSlide">
+        <div className="pacoteSlideImg">
+          <img src={p.image} alt={p.nome} />
+          <span className="pacoteSlideDuracao">{p.duracao}</span>
         </div>
-        <Slideshow
-          className="pacotesSlideshow"
-          items={pacotes}
-          renderItem={(p) => (
-            <div className="pacoteSlide">
-              <div className="pacoteSlideImg">
-                <img src={p.image} alt={p.nome} />
-                <span className="pacoteSlideDuracao">{p.duracao}</span>
-              </div>
-              <div className="pacoteSlideBody">
-                <h3>{p.nome}</h3>
-                <p>{p.descricao}</p>
-                <div className="pacoteSlideFooter">
-                  <span className="pacoteCardPreco">{p.preco}</span>
-                  <a href="#servico-Tours" className="pacoteCardBtn">Ver excursões <ChevronRight size={14} /></a>
-                </div>
-              </div>
-            </div>
-          )}
-        />
-      </section>
+        <div className="pacoteSlideBody">
+          <h3>{p.nome}</h3>
+          <p>{p.descricao}</p>
+          <div className="pacoteSlideFooter">
+            <span className="pacoteCardPreco">{p.preco}</span>
+            <Link to="/categorias/pacotes" className="pacoteCardBtn">
+              Ver todos os pacotes <ChevronRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    )}
+  />
+  
+
+</section>
 
       <footer className="footer" id="contacto">
         <div>

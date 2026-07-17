@@ -1,16 +1,27 @@
-import React from "react";
+// AboutPage.jsx - CORRIGIDO
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, MapPin, Mail, Phone, Globe,
   Users, ShieldCheck, Leaf, Star,
-  Instagram, Facebook, Twitter,
-  ChevronRight, Heart,
+  Instagram, Facebook,
+  ChevronRight, Heart, Menu, X, LogOut,
 } from "lucide-react";
 import "./aboutPage.css";
+import { useAuth } from "./AuthContext.jsx";
+import { categories } from "./categories.js";
+
+// ── Dados (movidos para dentro do componente ou para fora) ──
+const stats = [
+  { num: "8", label: "Categorias turísticas" },
+  { num: "80+", label: "Parceiros verificados" },
+  { num: "2", label: "Ilhas cobertas" },
+  { num: "2024", label: "Ano de fundação" },
+];
 
 const team = [
   { name: "Daniel Sousa", role: "Fundador", initial: "D", bio: "Natural de São Tomé, Daniel cresceu entre as roças e o mar. Depois de anos a trabalhar em turismo sustentável em Portugal, regressou para construir o portal que a ilha merecia." },
- ];
+];
 
 const values = [
   { icon: Leaf, title: "Turismo Sustentável", desc: "Promovemos apenas parceiros comprometidos com práticas ambientais responsáveis e com a preservação da floresta equatorial e dos recifes de STP." },
@@ -19,16 +30,96 @@ const values = [
   { icon: Heart, title: "Feito com Amor pela Ilha", desc: "A equipa é maioritariamente santomense. Conhecemos cada praia, cada roça e cada sabor. Este portal é um acto de amor pela nossa terra." },
 ];
 
-const stats = [
-  { num: "8", label: "Categorias turísticas" },
-  { num: "80+", label: "Parceiros verificados" },
-  { num: "2", label: "Ilhas cobertas" },
-  { num: "2024", label: "Ano de fundação" },
-];
+// ── Componente MobileMenu ──
+function MobileMenu({ open, onClose }) {
+  const { user, logout } = useAuth();
 
+  React.useEffect(() => {
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  const linkStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "12px 14px",
+    borderRadius: "14px",
+    color: "var(--ink)",
+    fontWeight: 700,
+    fontSize: "0.93rem",
+    textDecoration: "none",
+    transition: "background 0.15s"
+  };
+
+  return (
+    <>
+      <div 
+        onClick={onClose} 
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 98,
+          background: "rgba(7,63,37,.55)",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+          transition: "opacity 0.25s"
+        }} 
+      />
+       <nav className="nav" aria-label="Navegação principal">
+          <Link to="/sobre" className="brand" aria-label="Sobre o STP Verde" title="Sobre nós">
+            <img src="public/images/logotipo.jpeg" alt="STP Verde" />
+          </Link>
+
+          <div className="navLinks">
+            <Link to="/categorias/alojamento/hoteis">Alojamento</Link>
+            <Link to="/categorias/alojamento/Transporte">Transporte</Link>
+            <Link to="/categorias/alojamento/Excursões">Excursões</Link>
+            <Link to="/categorias/alojamento/Tours">Tours</Link>
+            <Link to="/sobre">Sobre nós</Link>
+            <a href="#contacto">Contacto</a>
+          </div>
+
+          {user && (
+            <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
+              <span style={{ display:"flex", alignItems:"center", gap:"6px", fontSize:"0.82rem", fontWeight:700, color:"rgba(255,255,255,.85)" }}>
+                <User size={15} /> {user.name.split(" ")[0]}
+              </span>
+              <button onClick={logout} aria-label="Terminar sessão"
+                style={{ background:"rgba(255,255,255,.12)", border:"1px solid rgba(255,255,255,.25)", borderRadius:"999px", padding:"7px 14px", color:"rgba(255,255,255,.85)", fontSize:"0.8rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:"5px", transition:"background .15s" }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,.22)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,.12)"}>
+                <LogOut size={14} /> Sair
+              </button>
+            </div>
+          )}
+
+          <button className="iconButton" aria-label="Abrir menu" onClick={() => setMenuOpen(true)}>
+            <Menu size={20} />
+          </button>
+        </nav>
+    </>
+  );
+}
+
+// ── AboutPage principal ──
 export default function AboutPage() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <main className="ab-root">
+      {/* ── Menu Mobile ── */}
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+      {/* ── Botão do Menu ── */}
+      <button 
+        className="ab-menu-btn" 
+        onClick={() => setMenuOpen(true)}
+        aria-label="Abrir menu"
+      >
+        <Menu size={22} />
+      </button>
 
       {/* ── Hero ── */}
       <section className="ab-hero">
@@ -56,9 +147,9 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── Corpo da Página ── */}
       <div className="ab-body">
-
-        {/* ── Missão ── */}
+        {/* Missão */}
         <section className="ab-section ab-mission">
           <div className="ab-section-text">
             <p className="ab-eyebrow">A nossa missão</p>
@@ -81,7 +172,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Valores ── */}
+        {/* Valores */}
         <section className="ab-section">
           <div className="ab-section-header">
             <p className="ab-eyebrow">O que nos guia</p>
@@ -98,7 +189,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Equipa ── */}
+        {/* Equipa */}
         <section className="ab-section">
           <div className="ab-section-header">
             <p className="ab-eyebrow">Quem somos</p>
@@ -118,7 +209,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Contacto ── */}
+        {/* Contacto */}
         <section className="ab-section ab-contact-section">
           <div className="ab-section-header">
             <p className="ab-eyebrow">Contactos</p>
@@ -149,7 +240,6 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-
       </div>
 
       {/* ── Footer ── */}
@@ -158,7 +248,6 @@ export default function AboutPage() {
         <p>Portal turístico para São Tomé e Príncipe · Feito com 🌿 pela ilha</p>
         <Link to="/" className="ab-footer-link">Voltar ao portal <ChevronRight size={14} /></Link>
       </footer>
-
     </main>
   );
 }
