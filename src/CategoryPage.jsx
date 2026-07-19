@@ -2,14 +2,16 @@
 import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, ChevronRight, Phone, Mail, Package, Clock, Menu, X, LogOut, User } from "lucide-react";
-import { categories, pacotes } from "./categories.js";
+import { pacotes } from "./categories.js";
 import { useAuth } from "./AuthContext.jsx";
+import { useAdmin } from "./AdminContext.jsx";
 import "./categoryPage.css";
 import "./styles.css";
 
 // Componente MobileMenu específico para CategoryPage
 function CategoryMobileMenu({ open, onClose }) {
   const { user, logout } = useAuth();
+  const { publicCategories: categories } = useAdmin();
 
   React.useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
@@ -142,6 +144,7 @@ export default function CategoryPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { publicCategories: categories } = useAdmin();
   const [menuOpen, setMenuOpen] = useState(false);
   
   const isPackagesCategory = id === "pacotes";
@@ -406,6 +409,7 @@ export default function CategoryPage() {
 function PackagesCategoryPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { publicCategories: categories } = useAdmin();
   const [searchTerm, setSearchTerm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 

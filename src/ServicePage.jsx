@@ -4,14 +4,15 @@ import {
   ArrowLeft, MapPin,
   ChevronRight, SlidersHorizontal, Sparkles, CalendarCheck,
 } from "lucide-react";
-import { categories } from "./categories.js";
 import { useAuth } from "./AuthContext.jsx";
+import { useAdmin } from "./AdminContext.jsx";
 import AuthModal from "./AuthModal.jsx";
 import BookingModal from "./BookingModal.jsx";
 import "./servicePage.css";
 
 export default function ServicePage() {
   const { catId, serviceId } = useParams();
+  const { publicCategories: categories } = useAdmin();
   const category = categories.find((c) => c.id === catId);
   const service = category?.services.find((s) => s.id === serviceId);
   const { user } = useAuth();

@@ -1,10 +1,7 @@
 //categories.js
-import {
-  Bike, Binoculars, Building2, Camera, Car, ChefHat, Coffee,
-  Compass, Fish, Gift, Heart, Home, Hotel, Landmark, Languages,
-  Map, MapPin, Mountain, Palmtree, Plane, Sailboat, Ship,
-  Sparkles, Store, TentTree, Utensils, Waves,
-} from "lucide-react";
+// Os ícones são guardados como o NOME (string) do ícone lucide-react — ver
+// iconMap.js para a resolução em runtime. Isto permite que o mesmo dado seja
+// editado e persistido pelo painel de administração (localStorage).
 
 // ─── Estrutura de cada listing ───
 // {
@@ -72,7 +69,7 @@ export const categories = [
     id: "alojamento",
     title: "O QUE FAZEMOS",
     tagline: "Estadias com conforto, charme local e vista para o Atlântico.",
-    icon: Home,
+    icon: "Home",
     heroImage: "/images/praia-verde-stp.jpg",
     description: "De resorts de luxo a eco-lodges na floresta, São Tomé e Príncipe oferece alojamentos únicos para todos os tipos de viajante.",
     services: [
@@ -80,7 +77,7 @@ export const categories = [
         id: "hoteis",
         name: "alojamento",
         description: "Conforto completo para explorar a capital e a costa.",
-        icon: Hotel,
+        icon: "Hotel",
        
         image: "/images/categories/Alojamento.avif", 
         listings: [
@@ -92,7 +89,7 @@ export const categories = [
         id: "Transporte",
         name: "Transporte",
         description: "Dias sem pressa entre praia, piscina e boa mesa.",
-        icon: Palmtree,
+        icon: "Palmtree",
         
         image: "/images/categories/Jimmy.jpg", 
         listings: [
@@ -104,7 +101,7 @@ export const categories = [
         id: "Excursões",
         name: "Excursões",
         description: "Acolhimento familiar com alma santomense.",
-        icon: Home,
+        icon: "Binoculars",
        
         image: "/images/pico-cao-grande.webp",
         listings: [
@@ -116,8 +113,7 @@ export const categories = [
         id: "Tours",
         name: "Tours",
         description: "Natureza, silêncio e baixa pegada ambiental.",
-        icon: TentTree,
-     
+        icon: "TentTree",
         image: "/images/tours.jpg",
         listings: [
           { id: "boa-vista-eco", nome: "Boa Vista Eco Lodge", tipo: "Eco-lodge", local: "Floresta do Sul", descricao: "Lodge sustentável construído com materiais locais no interior da floresta equatorial. Energia solar, água da nascente e trilhos privados com guia incluído.", destaque: "100% energia solar", avaliacao: 4.7, avaliacoes: 78, preco: "Desde 95€/noite", tags: ["Solar", "Floresta", "Trilhos", "Sustentável", "Guia"], contacto: { tel: "+239 222 6677", email: "ecolodge@boavista.st", web: "boavistaeco.st" }, featured: true },
@@ -128,8 +124,7 @@ export const categories = [
         id: "Eventos",
         name: "Eventos",
         description: "Natureza, silêncio e baixa pegada ambiental.",
-        icon: TentTree,
-        
+        icon: "Ticket",
         image: "/images/tchiloli.jpg",
         listings: [
           { id: "boa-vista-eco", nome: "Boa Vista Eco Lodge", tipo: "Eco-lodge", local: "Floresta do Sul", descricao: "Lodge sustentável construído com materiais locais no interior da floresta equatorial. Energia solar, água da nascente e trilhos privados com guia incluído.", destaque: "100% energia solar", avaliacao: 4.7, avaliacoes: 78, preco: "Desde 95€/noite", tags: ["Solar", "Floresta", "Trilhos", "Sustentável", "Guia"], contacto: { tel: "+239 222 6677", email: "ecolodge@boavista.st", web: "boavistaeco.st" }, featured: true },

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { X, Eye, EyeOff, User, Mail, Lock, Phone, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "./AuthContext.jsx";
+import { useAdmin } from "./AdminContext.jsx";
 import "./authModal.css";
 
 export default function AuthModal({ onClose, onSuccess, defaultTab = "login" }) {
   const { login } = useAuth();
+  const { utilizadores, registerUtilizador } = useAdmin();
   const [tab, setTab] = useState(defaultTab);
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
@@ -26,8 +28,7 @@ export default function AuthModal({ onClose, onSuccess, defaultTab = "login" }) 
     if (!loginForm.email || !loginForm.password) { setError("Preenche todos os campos."); return; }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
-    const users = JSON.parse(localStorage.getItem("stp_users") || "[]");
-    const found = users.find((u) => u.email === loginForm.email && u.password === loginForm.password);
+    const found = utilizadores.find((u) => u.email === loginForm.email && u.password === loginForm.password);
     setLoading(false);
     if (!found) { setError("Email ou palavra-passe incorretos."); return; }
     const { password: _, ...safe } = found;
@@ -43,11 +44,8 @@ export default function AuthModal({ onClose, onSuccess, defaultTab = "login" }) 
     if (password !== confirm) { setError("As palavras-passe não coincidem."); return; }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
-    const users = JSON.parse(localStorage.getItem("stp_users") || "[]");
-    if (users.find((u) => u.email === email)) { setLoading(false); setError("Email já registado. Faz login."); return; }
-    const newUser = { id: Date.now(), name, email, phone, password, createdAt: new Date().toISOString() };
-    users.push(newUser);
-    localStorage.setItem("stp_users", JSON.stringify(users));
+    if (utilizadores.find((u) => u.email === email)) { setLoading(false); setError("Email já registado. Faz login."); return; }
+    const newUser = registerUtilizador({ name, email, phone, password });
     const { password: _, ...safe } = newUser;
     login(safe); setLoading(false); onSuccess?.(); onClose();
   }

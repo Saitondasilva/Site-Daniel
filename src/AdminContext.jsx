@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { categories as defaultCategories } from "./categories.js";
+import { getIcon } from "./iconMap.js";
 
 const AdminContext = createContext(null);
 
@@ -7,15 +8,11 @@ const AdminContext = createContext(null);
 const ADMIN_CREDENTIALS = { email: "admin@stpverde.st", password: "admin2024" };
 
 function seed() {
-  // Converte categories.js para o formato editável
+  // Converte categories.js para o formato editável (icon já vem como string)
   return defaultCategories.map((cat) => ({
     ...cat,
-    icon: cat.id, // guardamos apenas o id string (o icon component é mapeado em runtime)
-    services: cat.services.map((svc) => ({
-      ...svc,
-      icon: svc.id,
-    })),
     ativo: true,
+    services: cat.services.map((svc) => ({ ...svc })),
   }));
 }
 
@@ -73,7 +70,7 @@ export function AdminProvider({ children }) {
 
   // ── Categorias ──
   function addCategory(cat) {
-    const updated = [...categories, { ...cat, id: `cat-${Date.now()}`, ativo: true, services: [] }];
+    const updated = [...categories, { icon: "Compass", ...cat, id: `cat-${Date.now()}`, ativo: true, services: [] }];
     persist(updated);
   }
 
@@ -92,7 +89,7 @@ export function AdminProvider({ children }) {
   // ── Serviços ──
   function addService(catId, svc) {
     persist(categories.map((c) => c.id === catId
-      ? { ...c, services: [...c.services, { ...svc, id: `svc-${Date.now()}`, listings: [] }] }
+      ? { ...c, services: [...c.services, { icon: "Compass", ...svc, id: `svc-${Date.now()}`, listings: [] }] }
       : c));
   }
 
@@ -108,45 +105,89 @@ export function AdminProvider({ children }) {
       : c));
   }
 
-  // ── Parceiros/Listings ──
+  // ── Parceiros (listings dentro de um serviço) ──
   function addListing(catId, svcId, listing) {
     persist(categories.map((c) => c.id === catId
-      ? { ...c, services: c.services.map((s) => s.id === svcId
-          ? { ...s, listings: [...s.listings, { ...listing, id: `lst-${Date.now()}`, avaliacao: 4.5, avaliacoes: 0, featured: false }] }
-          : s) }
+      ? {
+          ...c,
+          services: c.services.map((s) => s.id === svcId
+            ? { ...s, listings: [...(s.listings || []), { avaliacao: 5, avaliacoes: 0, tags: [], contacto: {}, ...listing, id: `ptn-${Date.now()}` }] }
+            : s),
+        }
       : c));
   }
 
-  function updateListing(catId, svcId, lstId, fields) {
+  function updateListing(catId, svcId, listingId, fields) {
     persist(categories.map((c) => c.id === catId
-      ? { ...c, services: c.services.map((s) => s.id === svcId
-          ? { ...s, listings: s.listings.map((l) => l.id === lstId ? { ...l, ...fields } : l) }
-          : s) }
+      ? {
+          ...c,
+          services: c.services.map((s) => s.id === svcId
+            ? { ...s, listings: (s.listings || []).map((l) => l.id === listingId ? { ...l, ...fields } : l) }
+            : s),
+        }
       : c));
   }
 
-  function deleteListing(catId, svcId, lstId) {
+  function deleteListing(catId, svcId, listingId) {
     persist(categories.map((c) => c.id === catId
-      ? { ...c, services: c.services.map((s) => s.id === svcId
-          ? { ...s, listings: s.listings.filter((l) => l.id !== lstId) }
-          : s) }
+      ? {
+          ...c,
+          services: c.services.map((s) => s.id === svcId
+            ? { ...s, listings: (s.listings || []).filter((l) => l.id !== listingId) }
+            : s),
+        }
       : c));
   }
 
-  function toggleFeatured(catId, svcId, lstId) {
-    persist(categories.map((c) => c.id === catId
-      ? { ...c, services: c.services.map((s) => s.id === svcId
-          ? { ...s, listings: s.listings.map((l) => l.id === lstId ? { ...l, featured: !l.featured } : l) }
-          : s) }
-      : c));
+  // ── Reservas (sistema de reservas real, partilhado com o site público) ──
+  function addReserva(reservaData) {
+    const nova = {
+      status: "pendente",
+      createdAt: new Date().toISOString(),
+      ...reservaData,
+      id: Date.now(),
+    };
+    const updated = [...reservas, nova];
+    setReservas(updated);
+    localStorage.setItem("stp_reservas", JSON.stringify(updated));
+    return nova;
   }
 
-  // ── Reservas ──
   function updateReservaStatus(id, status) {
     const updated = reservas.map((r) => r.id === id ? { ...r, status } : r);
     setReservas(updated);
     localStorage.setItem("stp_reservas", JSON.stringify(updated));
   }
+
+  // ── Utilizadores (registo real, partilhado com o site público) ──
+  function registerUtilizador(userData) {
+    const novo = { createdAt: new Date().toISOString(), ...userData, id: Date.now() };
+    const updated = [...utilizadores, novo];
+    setUtilizadores(updated);
+    localStorage.setItem("stp_users", JSON.stringify(updated));
+    return novo;
+  }
+
+  function findUtilizadorByEmail(email) {
+    return utilizadores.find((u) => u.email === email);
+  }
+
+  // ── Categorias hidratadas para o site público ──
+  // Converte o nome do ícone (string, editável no admin) de volta num
+  // componente lucide-react e esconde categorias desativadas.
+  const publicCategories = useMemo(() => {
+    return categories
+      .filter((c) => c.ativo !== false)
+      .map((c) => ({
+        ...c,
+        icon: getIcon(c.icon),
+        services: (c.services || []).map((s) => ({
+          ...s,
+          icon: getIcon(s.icon),
+          listings: s.listings || [],
+        })),
+      }));
+  }, [categories]);
 
   const stats = {
     totalCategorias: categories.length,
@@ -161,11 +202,13 @@ export function AdminProvider({ children }) {
   return (
     <AdminContext.Provider value={{
       adminUser, adminLogin, adminLogout,
-      categories, addCategory, updateCategory, deleteCategory, toggleCategory,
+      categories, publicCategories,
+      addCategory, updateCategory, deleteCategory, toggleCategory,
       addService, updateService, deleteService,
-      addListing, updateListing, deleteListing, toggleFeatured,
-      reservas, updateReservaStatus,
-      utilizadores, stats,
+      addListing, updateListing, deleteListing,
+      reservas, addReserva, updateReservaStatus,
+      utilizadores, registerUtilizador, findUtilizadorByEmail,
+      stats,
     }}>
       {children}
     </AdminContext.Provider>

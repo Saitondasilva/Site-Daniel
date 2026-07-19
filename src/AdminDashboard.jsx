@@ -7,6 +7,7 @@ import {
   TrendingUp, Eye, ArrowUpRight, Search, Globe,
 } from "lucide-react";
 import { useAdmin } from "./AdminContext.jsx";
+import { ICON_NAMES, getIcon } from "./iconMap.js";
 import "./adminDashboard.css";
 
 const SECTIONS = [
@@ -120,7 +121,6 @@ function SectionOverview({ onNavigate }) {
   const kpis = [
     { label: "Categorias activas", value: `${stats.categoriasAtivas}/${stats.totalCategorias}`, icon: Tags, color: "green", section: "categories" },
     { label: "Total de serviços",  value: stats.totalServicos,   icon: Briefcase,    color: "blue",   section: "services" },
-    { label: "Parceiros listados", value: stats.totalParceiros,  icon: Building2,    color: "teal",   section: "partners" },
     { label: "Reservas pendentes", value: stats.reservasPendentes, icon: CalendarCheck, color: stats.reservasPendentes > 0 ? "orange" : "green", section: "bookings" },
     { label: "Total de reservas",  value: stats.totalReservas,   icon: TrendingUp,   color: "purple", section: "bookings" },
     { label: "Utilizadores",       value: stats.totalUtilizadores, icon: Users,       color: "pink",   section: "users" },
@@ -210,11 +210,11 @@ function SectionOverview({ onNavigate }) {
 function SectionCategories() {
   const { categories, addCategory, updateCategory, deleteCategory, toggleCategory } = useAdmin();
   const [modal, setModal] = useState(null); // null | "add" | { ...category }
-  const [form, setForm] = useState({ title: "", tagline: "", description: "" });
+  const [form, setForm] = useState({ title: "", tagline: "", description: "", icon: "Compass", heroImage: "" });
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  function openAdd() { setForm({ title: "", tagline: "", description: "" }); setModal("add"); }
-  function openEdit(cat) { setForm({ title: cat.title, tagline: cat.tagline, description: cat.description || "" }); setModal(cat); }
+  function openAdd() { setForm({ title: "", tagline: "", description: "", icon: "Compass", heroImage: "" }); setModal("add"); }
+  function openEdit(cat) { setForm({ title: cat.title, tagline: cat.tagline, description: cat.description || "", icon: cat.icon || "Compass", heroImage: cat.heroImage || "" }); setModal(cat); }
 
   function handleSave() {
     if (!form.title.trim()) return;
@@ -280,6 +280,8 @@ function SectionCategories() {
           <Field label="Título *" value={form.title} onChange={(v) => setForm((p) => ({ ...p, title: v }))} placeholder="Ex: Alojamento" />
           <Field label="Tagline" value={form.tagline} onChange={(v) => setForm((p) => ({ ...p, tagline: v }))} placeholder="Frase curta de descrição" />
           <Field label="Descrição" value={form.description} onChange={(v) => setForm((p) => ({ ...p, description: v }))} placeholder="Descrição longa da categoria" textarea />
+          <IconField value={form.icon} onChange={(v) => setForm((p) => ({ ...p, icon: v }))} />
+          <Field label="Imagem de fundo (URL)" value={form.heroImage} onChange={(v) => setForm((p) => ({ ...p, heroImage: v }))} placeholder="/images/exemplo.jpg" />
         </FormModal>
       )}
 
@@ -302,13 +304,13 @@ function SectionServices() {
   const { categories, addService, updateService, deleteService } = useAdmin();
   const [selectedCat, setSelectedCat] = useState(categories[0]?.id || "");
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ name: "", description: "", label: "" });
+  const [form, setForm] = useState({ name: "", description: "", label: "", icon: "Compass", image: "" });
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   const cat = categories.find((c) => c.id === selectedCat);
 
-  function openAdd() { setForm({ name: "", description: "", label: "" }); setModal("add"); }
-  function openEdit(svc) { setForm({ name: svc.name, description: svc.description, label: svc.label || "" }); setModal(svc); }
+  function openAdd() { setForm({ name: "", description: "", label: "", icon: "Compass", image: "" }); setModal("add"); }
+  function openEdit(svc) { setForm({ name: svc.name, description: svc.description, label: svc.label || "", icon: svc.icon || "Compass", image: svc.image || "" }); setModal(svc); }
 
   function handleSave() {
     if (!form.name.trim()) return;
@@ -366,6 +368,8 @@ function SectionServices() {
           <Field label="Nome *" value={form.name} onChange={(v) => setForm((p) => ({ ...p, name: v }))} placeholder="Ex: Hotéis" />
           <Field label="Descrição" value={form.description} onChange={(v) => setForm((p) => ({ ...p, description: v }))} placeholder="Breve descrição do serviço" />
           <Field label="Label (badge)" value={form.label} onChange={(v) => setForm((p) => ({ ...p, label: v }))} placeholder="Ex: Premium, Top, Eco..." />
+          <IconField value={form.icon} onChange={(v) => setForm((p) => ({ ...p, icon: v }))} />
+          <Field label="Imagem do card (URL)" value={form.image} onChange={(v) => setForm((p) => ({ ...p, image: v }))} placeholder="/images/exemplo.jpg" />
         </FormModal>
       )}
 
@@ -381,133 +385,144 @@ function SectionServices() {
 }
 
 /* ══════════════════════════════════════════
-   SECTION: Parceiros
+   SECTION: Parceiros (listings dentro de um serviço)
 ══════════════════════════════════════════ */
 function SectionPartners() {
-  const { categories, addListing, updateListing, deleteListing, toggleFeatured } = useAdmin();
+  const { categories, addListing, updateListing, deleteListing } = useAdmin();
   const [selectedCat, setSelectedCat] = useState(categories[0]?.id || "");
-  const [selectedSvc, setSelectedSvc] = useState("");
+  const cat = categories.find((c) => c.id === selectedCat) || categories[0];
+  const [selectedSvc, setSelectedSvc] = useState(cat?.services?.[0]?.id || "");
+  const svc = cat?.services?.find((s) => s.id === selectedSvc);
+
+  const emptyForm = { nome: "", tipo: "", local: "", descricao: "", destaque: "", preco: "", avaliacao: 5, avaliacoes: 0, tags: "", tel: "", email: "", web: "", featured: false };
   const [modal, setModal] = useState(null);
-  const [confirmDelete, setConfirmDelete] = useState(null);
-  const [search, setSearch] = useState("");
-
-  const emptyForm = { nome: "", tipo: "", local: "", descricao: "", destaque: "", preco: "", tags: "", contacto: { tel: "", email: "", web: "" } };
   const [form, setForm] = useState(emptyForm);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  const cat = categories.find((c) => c.id === selectedCat);
-  const svc = cat?.services?.find((s) => s.id === selectedSvc) || cat?.services?.[0];
-
-  React.useEffect(() => {
-    if (cat?.services?.length) setSelectedSvc(cat.services[0].id);
-  }, [selectedCat]);
+  function changeCat(id) {
+    setSelectedCat(id);
+    const c = categories.find((x) => x.id === id);
+    setSelectedSvc(c?.services?.[0]?.id || "");
+  }
 
   function openAdd() { setForm(emptyForm); setModal("add"); }
-  function openEdit(lst) {
-    setForm({ ...lst, tags: (lst.tags || []).join(", "), contacto: { tel: lst.contacto?.tel || "", email: lst.contacto?.email || "", web: lst.contacto?.web || "" } });
-    setModal(lst);
+  function openEdit(l) {
+    setForm({
+      nome: l.nome || "", tipo: l.tipo || "", local: l.local || "", descricao: l.descricao || "",
+      destaque: l.destaque || "", preco: l.preco || "", avaliacao: l.avaliacao ?? 5, avaliacoes: l.avaliacoes ?? 0,
+      tags: (l.tags || []).join(", "), tel: l.contacto?.tel || "", email: l.contacto?.email || "", web: l.contacto?.web || "",
+      featured: !!l.featured,
+    });
+    setModal(l);
   }
 
   function handleSave() {
-    if (!form.nome.trim()) return;
-    const payload = { ...form, tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean) };
-    if (modal === "add") addListing(selectedCat, svc.id, payload);
-    else updateListing(selectedCat, svc.id, modal.id, payload);
+    if (!form.nome.trim() || !selectedCat || !selectedSvc) return;
+    const payload = {
+      nome: form.nome, tipo: form.tipo, local: form.local, descricao: form.descricao,
+      destaque: form.destaque, preco: form.preco,
+      avaliacao: Number(form.avaliacao) || 0, avaliacoes: Number(form.avaliacoes) || 0,
+      tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+      contacto: { tel: form.tel, email: form.email, web: form.web },
+      featured: !!form.featured,
+    };
+    if (modal === "add") addListing(selectedCat, selectedSvc, payload);
+    else updateListing(selectedCat, selectedSvc, modal.id, payload);
     setModal(null);
   }
-
-  const listings = (svc?.listings || []).filter((l) =>
-    !search || l.nome.toLowerCase().includes(search.toLowerCase()) || l.local?.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <div className="ad-section">
       <div className="ad-section-header">
         <div>
           <h2>Parceiros</h2>
-          <p>Adiciona, edita ou remove parceiros de cada serviço.</p>
+          <p>Gere os parceiros (hotéis, guias, operadores...) listados dentro de cada serviço.</p>
         </div>
-        <button className="ad-btn-primary" onClick={openAdd} disabled={!svc}>
+        <button className="ad-btn-primary" onClick={openAdd} disabled={!selectedSvc}>
           <Plus size={16} /> Novo parceiro
         </button>
       </div>
 
-      {/* Selectors */}
-      <div className="ad-cat-selector" style={{ marginBottom: 10 }}>
+      {/* Selector de categoria */}
+      <div className="ad-cat-selector">
         {categories.map((c) => (
-          <button key={c.id} className={`ad-cat-tab ${selectedCat === c.id ? "active" : ""}`} onClick={() => setSelectedCat(c.id)}>
+          <button key={c.id} className={`ad-cat-tab ${selectedCat === c.id ? "active" : ""}`} onClick={() => changeCat(c.id)}>
             {c.title}
           </button>
         ))}
       </div>
-      {cat?.services?.length > 0 && (
-        <div className="ad-cat-selector ad-cat-selector--sub">
+
+      {/* Selector de serviço dentro da categoria */}
+      {cat && cat.services?.length > 0 && (
+        <div className="ad-cat-selector" style={{ marginTop: 8 }}>
           {cat.services.map((s) => (
-            <button key={s.id} className={`ad-cat-tab ad-cat-tab--sm ${selectedSvc === s.id ? "active" : ""}`} onClick={() => setSelectedSvc(s.id)}>
-              {s.name} <span>{s.listings?.length || 0}</span>
+            <button key={s.id} className={`ad-cat-tab ${selectedSvc === s.id ? "active" : ""}`} onClick={() => setSelectedSvc(s.id)}>
+              {s.name}
+              <span>{s.listings?.length || 0}</span>
             </button>
           ))}
         </div>
       )}
 
-      {/* Search */}
-      <div className="ad-search-bar">
-        <Search size={16} />
-        <input placeholder="Pesquisar parceiro ou localização..." value={search} onChange={(e) => setSearch(e.target.value)} />
-      </div>
-
-      <div className="ad-list">
-        {listings.length === 0 && <p className="ad-empty">Nenhum parceiro encontrado. Adiciona o primeiro!</p>}
-        {listings.map((lst) => (
-          <div key={lst.id} className="ad-list-item">
-            <div className="ad-list-item-main">
-              <div className={`ad-list-avatar ${lst.featured ? "ad-list-avatar--gold" : "ad-list-avatar--teal"}`}>{lst.nome.charAt(0)}</div>
-              <div className="ad-list-info">
-                <h4>{lst.nome} {lst.featured && <span className="ad-featured-badge">⭐ Destaque</span>}</h4>
-                <p>{lst.tipo} · {lst.local}</p>
-                <span className="ad-list-meta">{lst.preco} · {(lst.tags || []).slice(0, 3).join(", ")}</span>
+      {svc ? (
+        <div className="ad-list" style={{ marginTop: 20 }}>
+          {(!svc.listings || svc.listings.length === 0) && (
+            <p className="ad-empty">Nenhum parceiro neste serviço. Adiciona o primeiro!</p>
+          )}
+          {svc.listings?.map((l) => (
+            <div key={l.id} className="ad-list-item">
+              <div className="ad-list-item-main">
+                <div className="ad-list-avatar ad-list-avatar--blue">{(l.nome || "?").charAt(0)}</div>
+                <div className="ad-list-info">
+                  <h4>{l.nome} {l.featured && <Star size={13} style={{ color: "#f59e0b", verticalAlign: "-2px" }} />}</h4>
+                  <p>{l.tipo} · {l.local} · {l.preco}</p>
+                  <span className="ad-list-meta">★ {Number(l.avaliacao).toFixed(1)} ({l.avaliacoes}) · {(l.tags || []).join(", ") || "sem tags"}</span>
+                </div>
+              </div>
+              <div className="ad-list-actions">
+                <button className="ad-icon-btn edit" onClick={() => openEdit(l)}><Pencil size={16} /></button>
+                <button className="ad-icon-btn delete" onClick={() => setConfirmDelete(l.id)}><Trash2 size={16} /></button>
               </div>
             </div>
-            <div className="ad-list-actions">
-              <button
-                className={`ad-toggle-btn ${lst.featured ? "on" : "off"} ad-toggle-btn--sm`}
-                onClick={() => toggleFeatured(selectedCat, svc.id, lst.id)}
-                title="Destaque"
-              >
-                <Star size={14} /> {lst.featured ? "Destaque" : "Normal"}
-              </button>
-              <button className="ad-icon-btn edit" onClick={() => openEdit(lst)}><Pencil size={16} /></button>
-              <button className="ad-icon-btn delete" onClick={() => setConfirmDelete(lst.id)}><Trash2 size={16} /></button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="ad-empty" style={{ marginTop: 20 }}>Esta categoria ainda não tem serviços. Cria um serviço primeiro.</p>
+      )}
 
       {modal !== null && (
         <FormModal title={modal === "add" ? "Novo parceiro" : "Editar parceiro"} onClose={() => setModal(null)} onSave={handleSave} wide>
           <div className="ad-form-row">
-            <Field label="Nome *" value={form.nome} onChange={(v) => setForm((p) => ({ ...p, nome: v }))} placeholder="Nome do parceiro" />
-            <Field label="Tipo" value={form.tipo} onChange={(v) => setForm((p) => ({ ...p, tipo: v }))} placeholder="Ex: Hotel 4★" />
+            <Field label="Nome *" value={form.nome} onChange={(v) => setForm((p) => ({ ...p, nome: v }))} placeholder="Ex: Mucumbri" />
+            <Field label="Tipo" value={form.tipo} onChange={(v) => setForm((p) => ({ ...p, tipo: v }))} placeholder="Ex: Resort 5★" />
           </div>
           <div className="ad-form-row">
-            <Field label="Localização" value={form.local} onChange={(v) => setForm((p) => ({ ...p, local: v }))} placeholder="Ex: São Tomé cidade" />
-            <Field label="Preço" value={form.preco} onChange={(v) => setForm((p) => ({ ...p, preco: v }))} placeholder="Ex: Desde 120€/noite" />
+            <Field label="Localização" value={form.local} onChange={(v) => setForm((p) => ({ ...p, local: v }))} placeholder="Ex: São Tomé" />
+            <Field label="Preço" value={form.preco} onChange={(v) => setForm((p) => ({ ...p, preco: v }))} placeholder="Ex: Desde 180€/noite" />
           </div>
           <Field label="Descrição" value={form.descricao} onChange={(v) => setForm((p) => ({ ...p, descricao: v }))} placeholder="Descrição do parceiro" textarea />
-          <Field label="Destaque (frase curta)" value={form.destaque} onChange={(v) => setForm((p) => ({ ...p, destaque: v }))} placeholder="Ex: Vista mar incrível" />
-          <Field label="Tags (separadas por vírgula)" value={form.tags} onChange={(v) => setForm((p) => ({ ...p, tags: v }))} placeholder="Ex: Piscina, Wi-Fi, AC" />
-          <div className="ad-form-group-label">Contactos</div>
+          <Field label="Destaque" value={form.destaque} onChange={(v) => setForm((p) => ({ ...p, destaque: v }))} placeholder="Ex: Piscina infinita com vista mar" />
           <div className="ad-form-row">
-            <Field label="Telefone" value={form.contacto.tel} onChange={(v) => setForm((p) => ({ ...p, contacto: { ...p.contacto, tel: v } }))} placeholder="+239 222 1234" />
-            <Field label="Email" value={form.contacto.email} onChange={(v) => setForm((p) => ({ ...p, contacto: { ...p.contacto, email: v } }))} placeholder="info@parceiro.st" />
-            <Field label="Website" value={form.contacto.web} onChange={(v) => setForm((p) => ({ ...p, contacto: { ...p.contacto, web: v } }))} placeholder="parceiro.st" />
+            <Field label="Avaliação (1-5)" value={String(form.avaliacao)} onChange={(v) => setForm((p) => ({ ...p, avaliacao: v }))} placeholder="4.8" />
+            <Field label="Nº de avaliações" value={String(form.avaliacoes)} onChange={(v) => setForm((p) => ({ ...p, avaliacoes: v }))} placeholder="120" />
           </div>
+          <Field label="Tags (separadas por vírgula)" value={form.tags} onChange={(v) => setForm((p) => ({ ...p, tags: v }))} placeholder="Piscina, Spa, Wi-Fi" />
+          <div className="ad-form-row">
+            <Field label="Telefone" value={form.tel} onChange={(v) => setForm((p) => ({ ...p, tel: v }))} placeholder="+239 222 1234" />
+            <Field label="Email" value={form.email} onChange={(v) => setForm((p) => ({ ...p, email: v }))} placeholder="contacto@parceiro.st" />
+          </div>
+          <Field label="Website" value={form.web} onChange={(v) => setForm((p) => ({ ...p, web: v }))} placeholder="parceiro.st" />
+          <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.88rem", fontWeight: 700, color: "var(--ink)", marginTop: 4 }}>
+            <input type="checkbox" checked={form.featured} onChange={(e) => setForm((p) => ({ ...p, featured: e.target.checked }))} />
+            Destacar este parceiro (featured)
+          </label>
         </FormModal>
       )}
 
       {confirmDelete && (
         <ConfirmModal
-          message="Eliminar este parceiro definitivamente?"
-          onConfirm={() => { deleteListing(selectedCat, svc.id, confirmDelete); setConfirmDelete(null); }}
+          message="Eliminar este parceiro? Esta ação não pode ser desfeita."
+          onConfirm={() => { deleteListing(selectedCat, selectedSvc, confirmDelete); setConfirmDelete(null); }}
           onCancel={() => setConfirmDelete(null)}
         />
       )}
@@ -660,6 +675,29 @@ function Field({ label, value, onChange, placeholder, textarea }) {
       {textarea
         ? <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={3} />
         : <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />}
+    </div>
+  );
+}
+
+function IconField({ value, onChange }) {
+  const Preview = getIcon(value);
+  return (
+    <div className="ad-field">
+      <label>Ícone</label>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(88,185,87,.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--forest-deep)", flexShrink: 0 }}>
+          <Preview size={20} />
+        </div>
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "1px solid var(--line)", fontFamily: "inherit", fontSize: "0.9rem", background: "white" }}
+        >
+          {ICON_NAMES.map((name) => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }

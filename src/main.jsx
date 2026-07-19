@@ -6,9 +6,9 @@ import {
   ChevronRight, ChevronLeft, MapPin, Menu, Search,
   Compass, X, LogOut, User, Package,
 } from "lucide-react";
-import { categories, destinos, pacotes } from "./categories.js";
+import { destinos, pacotes } from "./categories.js";
 import { AuthProvider, useAuth } from "./AuthContext.jsx";
-import { AdminProvider } from "./AdminContext.jsx";
+import { AdminProvider, useAdmin } from "./AdminContext.jsx";
 import CategoryPage from "./CategoryPage.jsx";
 import ServicePage from "./ServicePage.jsx";
 import AboutPage from "./AboutPage.jsx";
@@ -84,6 +84,7 @@ function Slideshow({ items, renderItem, autoPlay = true, interval = 6000, classN
 
 function MobileMenu({ open, onClose }) {
   const { user, logout } = useAuth();
+  const { publicCategories: categories } = useAdmin();
 
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
@@ -140,6 +141,7 @@ function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { publicCategories: categories } = useAdmin();
 
   const visibleCategories = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -147,7 +149,7 @@ function HomePage() {
       .filter((c) => active === "todos" || c.id === active)
       .map((c) => ({ ...c, services: c.services.filter((s) => { const hay = `${s.name} ${s.description} ${c.title}`.toLowerCase(); return !q || hay.includes(q); }) }))
       .filter((c) => c.services.length > 0);
-  }, [active, query]);
+  }, [active, query, categories]);
 
   return (
     <main>
@@ -319,7 +321,7 @@ function ServiceCategory({ category }) {
           <article key={service.id} id={`servico-${service.id}`} className="serviceCard" onClick={() => navigate(`/categorias/${category.id}/${service.id}`)}>
             <h4>{service.name}</h4>
             <div className="service-image">
-              <img src={service.image || "/images/categories/default.avif"} alt={service.name} />
+              <img src={service.image || "/images/praia-verde-stp.jpg"} alt={service.name} />
             </div>
             <p>{service.description}</p>
             {service.label && (

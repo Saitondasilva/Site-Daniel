@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import "./aboutPage.css";
 import { useAuth } from "./AuthContext.jsx";
-import { categories } from "./categories.js";
 
 // ── Dados (movidos para dentro do componente ou para fora) ──
 const stats = [

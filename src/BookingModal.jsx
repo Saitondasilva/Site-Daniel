@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { X, CalendarDays, Users, MessageSquare, CheckCircle2, ChevronRight, Phone, Mail } from "lucide-react";
 import { useAuth } from "./AuthContext.jsx";
+import { useAdmin } from "./AdminContext.jsx";
 import "./bookingModal.css";
 
 export default function BookingModal({ service, listing, onClose }) {
   const { user } = useAuth();
+  const { addReserva } = useAdmin();
   const [step, setStep] = useState("form");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -26,9 +28,14 @@ export default function BookingModal({ service, listing, onClose }) {
     if (!form.name || !form.email) { setError("Nome e email são obrigatórios."); return; }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 900));
-    const reservas = JSON.parse(localStorage.getItem("stp_reservas") || "[]");
-    reservas.push({ id: Date.now(), userId: user.id, serviceId: service.id, serviceName: service.name, listingId: listing?.id, listingName: listing?.nome || service.name, ...form, createdAt: new Date().toISOString(), status: "pendente" });
-    localStorage.setItem("stp_reservas", JSON.stringify(reservas));
+    addReserva({
+      userId: user.id,
+      serviceId: service.id,
+      serviceName: service.name,
+      listingId: listing?.id,
+      listingName: listing?.nome || service.name,
+      ...form,
+    });
     setLoading(false);
     setStep("success");
   }
