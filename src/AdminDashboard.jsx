@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   LayoutDashboard, Tags, Briefcase, Building2, CalendarCheck,
   Users, LogOut, Menu, X, ChevronRight, Plus, Pencil, Trash2,
   ToggleLeft, ToggleRight, Star, Clock, CheckCircle2, XCircle,
-  TrendingUp, Eye, ArrowUpRight, Search, Globe,
+  TrendingUp, Eye, ArrowUpRight, Search, Globe, Upload, Image as ImageIcon,
 } from "lucide-react";
 import { useAdmin } from "./AdminContext.jsx";
 import { ICON_NAMES, getIcon } from "./iconMap.js";
@@ -281,7 +281,7 @@ function SectionCategories() {
           <Field label="Tagline" value={form.tagline} onChange={(v) => setForm((p) => ({ ...p, tagline: v }))} placeholder="Frase curta de descrição" />
           <Field label="Descrição" value={form.description} onChange={(v) => setForm((p) => ({ ...p, description: v }))} placeholder="Descrição longa da categoria" textarea />
           <IconField value={form.icon} onChange={(v) => setForm((p) => ({ ...p, icon: v }))} />
-          <Field label="Imagem de fundo (URL)" value={form.heroImage} onChange={(v) => setForm((p) => ({ ...p, heroImage: v }))} placeholder="/images/exemplo.jpg" />
+          <ImageField label="Imagem de fundo" value={form.heroImage} onChange={(v) => setForm((p) => ({ ...p, heroImage: v }))} />
         </FormModal>
       )}
 
@@ -302,10 +302,14 @@ function SectionCategories() {
 ══════════════════════════════════════════ */
 function SectionServices() {
   const { categories, addService, updateService, deleteService } = useAdmin();
-  const [selectedCat, setSelectedCat] = useState(categories[0]?.id || "");
+  const [selectedCat, setSelectedCat] = useState("");
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ name: "", description: "", label: "", icon: "Compass", image: "" });
   const [confirmDelete, setConfirmDelete] = useState(null);
+
+  useEffect(() => {
+    if (!selectedCat && categories.length > 0) setSelectedCat(categories[0].id);
+  }, [categories, selectedCat]);
 
   const cat = categories.find((c) => c.id === selectedCat);
 
@@ -369,7 +373,7 @@ function SectionServices() {
           <Field label="Descrição" value={form.description} onChange={(v) => setForm((p) => ({ ...p, description: v }))} placeholder="Breve descrição do serviço" />
           <Field label="Label (badge)" value={form.label} onChange={(v) => setForm((p) => ({ ...p, label: v }))} placeholder="Ex: Premium, Top, Eco..." />
           <IconField value={form.icon} onChange={(v) => setForm((p) => ({ ...p, icon: v }))} />
-          <Field label="Imagem do card (URL)" value={form.image} onChange={(v) => setForm((p) => ({ ...p, image: v }))} placeholder="/images/exemplo.jpg" />
+          <ImageField label="Foto do serviço" value={form.image} onChange={(v) => setForm((p) => ({ ...p, image: v }))} />
         </FormModal>
       )}
 
@@ -389,9 +393,20 @@ function SectionServices() {
 ══════════════════════════════════════════ */
 function SectionPartners() {
   const { categories, addListing, updateListing, deleteListing } = useAdmin();
-  const [selectedCat, setSelectedCat] = useState(categories[0]?.id || "");
-  const cat = categories.find((c) => c.id === selectedCat) || categories[0];
-  const [selectedSvc, setSelectedSvc] = useState(cat?.services?.[0]?.id || "");
+  const [selectedCat, setSelectedCat] = useState("");
+  const [selectedSvc, setSelectedSvc] = useState("");
+  const cat = categories.find((c) => c.id === selectedCat);
+
+  useEffect(() => {
+    if (!selectedCat && categories.length > 0) setSelectedCat(categories[0].id);
+  }, [categories, selectedCat]);
+
+  useEffect(() => {
+    if (cat && (!selectedSvc || !cat.services?.some((s) => s.id === selectedSvc))) {
+      setSelectedSvc(cat.services?.[0]?.id || "");
+    }
+  }, [cat, selectedSvc]);
+
   const svc = cat?.services?.find((s) => s.id === selectedSvc);
 
   const emptyForm = { nome: "", tipo: "", local: "", descricao: "", destaque: "", preco: "", avaliacao: 5, avaliacoes: 0, tags: "", tel: "", email: "", web: "", featured: false };
@@ -399,11 +414,7 @@ function SectionPartners() {
   const [form, setForm] = useState(emptyForm);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  function changeCat(id) {
-    setSelectedCat(id);
-    const c = categories.find((x) => x.id === id);
-    setSelectedSvc(c?.services?.[0]?.id || "");
-  }
+  function changeCat(id) { setSelectedCat(id); }
 
   function openAdd() { setForm(emptyForm); setModal("add"); }
   function openEdit(l) {
@@ -675,6 +686,55 @@ function Field({ label, value, onChange, placeholder, textarea }) {
       {textarea
         ? <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={3} />
         : <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />}
+    </div>
+  );
+}
+
+function ImageField({ label, value, onChange }) {
+  const [error, setError] = useState("");
+  const inputId = `img-${label}`.replace(/\s+/g, "-");
+
+  function handleFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // permite re-selecionar o mesmo ficheiro depois
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { setError("Escolhe um ficheiro de imagem."); return; }
+    if (file.size > 2 * 1024 * 1024) { setError("Imagem demasiado grande (máx. 2MB)."); return; }
+    setError("");
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div className="ad-field">
+      <label>{label}</label>
+      <div className="ad-image-field">
+        <div className="ad-image-preview">
+          {value
+            ? <img src={value} alt="" />
+            : <div className="ad-image-placeholder"><ImageIcon size={22} /></div>}
+          {value && (
+            <button type="button" className="ad-image-remove" onClick={() => onChange("")} title="Remover imagem">
+              <X size={13} />
+            </button>
+          )}
+        </div>
+        <div className="ad-image-controls">
+          <label htmlFor={inputId} className="ad-image-upload-btn">
+            <Upload size={14} /> Carregar foto
+          </label>
+          <input id={inputId} type="file" accept="image/*" onChange={handleFile} style={{ display: "none" }} />
+          <input
+            type="text"
+            className="ad-image-url-input"
+            value={value && value.startsWith("data:") ? "" : value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="ou cola aqui um URL de imagem"
+          />
+        </div>
+      </div>
+      {error && <span style={{ color: "#c0392b", fontSize: "0.76rem", fontWeight: 700 }}>{error}</span>}
     </div>
   );
 }
