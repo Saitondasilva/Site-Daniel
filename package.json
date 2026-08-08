@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "stpverde-backend",
   "version": "1.0.0",
   "description": "Backend API for STPVerde Admin Panel",
@@ -23,5 +24,24 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+=======
+  "name": "turismo-stp-react",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.17.0",
+    "typescript": "^5.8.0",
+    "vite": "^7.0.0"
+>>>>>>> 3ff24a07caaf613af2e60220c1cc48c930a7c097
   }
 }
